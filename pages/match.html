@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>赛事中心 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" width="28" height="28">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">赛事中心</span>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 赛事类型Tab -->
+    <div class="tab-nav">
+      <button class="tab-item active" data-type="football">⚽ 足球</button>
+      <button class="tab-item" data-type="basketball">🏀 篮球</button>
+    </div>
+
+    <!-- 日期选择 -->
+    <div class="date-scroll">
+      <button class="date-item active">
+        <div class="date-week">今天</div>
+        <div class="date-day">01/15</div>
+      </button>
+      <button class="date-item">
+        <div class="date-week">周四</div>
+        <div class="date-day">01/16</div>
+      </button>
+      <button class="date-item">
+        <div class="date-week">周五</div>
+        <div class="date-day">01/17</div>
+      </button>
+      <button class="date-item">
+        <div class="date-week">周六</div>
+        <div class="date-day">01/18</div>
+      </button>
+      <button class="date-item">
+        <div class="date-week">周日</div>
+        <div class="date-day">01/19</div>
+      </button>
+    </div>
+
+    <!-- 足球赛事 -->
+    <div class="match-content active" id="football">
+      <div class="card">
+        <div class="match-filter">
+          <span class="filter-label">全部赛事</span>
+          <span class="filter-count">共5场</span>
+        </div>
+        
+        <div class="match-list">
+          <!-- 赛事1 -->
+          <div class="match-card">
+            <div class="match-header">
+              <span class="match-league">英超</span>
+              <span class="match-time">22:00</span>
+            </div>
+            <div class="match-teams">
+              <div class="team home">
+                <span class="team-name">阿森纳</span>
+              </div>
+              <div class="match-vs">VS</div>
+              <div class="team away">
+                <span class="team-name">切尔西</span>
+              </div>
+            </div>
+            <div class="match-odds">
+              <button class="odds-btn">
+                <span class="odds-label">主胜</span>
+                <span class="odds-value">1.85</span>
+              </button>
+              <button class="odds-btn">
+                <span class="odds-label">平</span>
+                <span class="odds-value">3.45</span>
+              </button>
+              <button class="odds-btn">
+                <span class="odds-label">客胜</span>
+                <span class="odds-value">4.20</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 赛事2 -->
+          <div class="match-card">
+            <div class="match-header">
+              <span class="match-league">西甲</span>
+              <span class="match-time">23:00</span>
+            </div>
+            <div class="match-teams">
+              <div class="team home">
+                <span class="team-name">皇马</span>
+              </div>
+              <div class="match-vs">VS</div>
+              <div class="team away">
+                <span class="team-name">巴萨</span>
+              </div>
+            </div>
+            <div class="match-odds">
+              <button class="odds-btn">
+                <span class="odds-label">主胜</span>
+                <span class="odds-value">2.10</span>
+              </button>
+              <button class="odds-btn">
+                <span class="odds-label">平</span>
+                <span class="odds-value">3.20</span>
+              </button>
+              <button class="odds-btn">
+                <span class="odds-label">客胜</span>
+                <span class="odds-value">3.50</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 赛事3 -->
+          <div class="match-card">
+            <div class="match-header">
+              <span class="match-league">意甲</span>
+              <span class="match-time">01:00</span>
+            </div>
+            <div class="match-teams">
+              <div class="team home">
+                <span class="team-name">尤文</span>
+              </div>
+              <div class="match-vs">VS</div>
+              <div class="team away">
+                <span class="team-name">米兰</span>
+              </div>
+            </div>
+            <div class="match-odds">
+              <button class="odds-btn">
+                <span class="odds-label">主胜</span>
+                <span class="odds-value">2.35</span>
+              </button>
+              <button class="odds-btn">
+                <span class="odds-label">平</span>
+                <span class="odds-value">3.10</span>
+              </button>
+              <button class="odds-btn">
+                <span class="odds-label">客胜</span>
+                <span class="odds-value">3.25</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 篮球赛事 -->
+    <div class="match-content" id="basketball" style="display: none;">
+      <div class="card">
+        <div class="match-filter">
+          <span class="filter-label">全部赛事</span>
+          <span class="filter-count">共3场</span>
+        </div>
+        
+        <div class="match-list">
+          <div class="match-card">
+            <div class="match-header">
+              <span class="match-league">NBA</span>
+              <span class="match-time">08:30</span>
+            </div>
+            <div class="match-teams">
+              <div class="team home">
+                <span class="team-name">湖人</span>
+              </div>
+              <div class="match-vs">VS</div>
+              <div class="team away">
+                <span class="team-name">勇士</span>
+              </div>
+            </div>
+            <div class="match-odds">
+              <button class="odds-btn">
+                <span class="odds-label">主胜</span>
+                <span class="odds-value">1.75</span>
+              </button>
+              <button class="odds-btn">
+                <span class="odds-label">客胜</span>
+                <span class="odds-value">2.05</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="match.html" class="nav-item active">
+      <span class="nav-icon">⚽</span>
+      <span>赛事</span>
+    </a>
+    <a href="data.html" class="nav-item">
+      <span class="nav-icon">📊</span>
+      <span>数据</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>我的</span>
+    </a>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    // Tab切换
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        const type = this.dataset.type;
+        document.querySelectorAll('.match-content').forEach(c => c.style.display = 'none');
+        document.getElementById(type).style.display = 'block';
+      });
+    });
+
+    // 日期选择
+    document.querySelectorAll('.date-item').forEach(date => {
+      date.addEventListener('click', function() {
+        document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // 赔率选择
+    document.querySelectorAll('.odds-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        this.classList.toggle('selected');
+      });
+    });
+  </script>
+  
+  <style>
+    .tab-nav {
+      display: flex;
+      background: var(--white);
+      margin: 12px 16px;
+      border-radius: 8px;
+      padding: 4px;
+      gap: 4px;
+    }
+    
+    .tab-item {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--gray-600);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .tab-item.active {
+      background: var(--primary-red);
+      color: var(--white);
+    }
+    
+    .date-scroll {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 12px;
+      overflow-x: auto;
+    }
+    
+    .date-item {
+      flex-shrink: 0;
+      padding: 10px 16px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .date-item.active {
+      background: var(--primary-red);
+      border-color: var(--primary-red);
+      color: var(--white);
+    }
+    
+    .date-week {
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+    
+    .date-day {
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .match-filter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gray-100);
+      margin-bottom: 12px;
+    }
+    
+    .filter-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-800);
+    }
+    
+    .filter-count {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    
+    .match-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .match-card {
+      background: var(--gray-50);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .match-league {
+      font-size: 12px;
+      color: var(--primary-red);
+      background: rgba(230, 0, 18, 0.1);
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+    
+    .match-time {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    
+    .match-teams {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    
+    .team {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .team-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    .match-vs {
+      padding: 0 20px;
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+    
+    .match-odds {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    
+    .odds-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .odds-btn.selected {
+      background: var(--primary-red);
+      border-color: var(--primary-red);
+      color: var(--white);
+    }
+    
+    .odds-label {
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+    
+    .odds-value {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</body>
+</html>

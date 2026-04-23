@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>我的 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <a href="../index.html" class="header-back" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 24px; color: white; text-decoration: none; z-index: 10;">‹</a>
+    <div class="header-logo" style="margin-left: 40px;">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" width="28" height="28">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">我的</span>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 用户信息 -->
+    <div class="user-section">
+      <div class="user-card">
+        <div class="user-avatar">👤</div>
+        <div class="user-info">
+          <div class="user-name">游客用户</div>
+          <div class="user-id">ID: 88888888</div>
+        </div>
+        <button class="btn btn-outline" style="padding: 6px 16px; font-size: 12px;" onclick="showToast('登录功能开发中')">登录</button>
+      </div>
+    </div>
+
+    <!-- 数据概览 -->
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value" id="stat-schemes">0</div>
+        <div class="stat-label">我的方案</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-wins">0</div>
+        <div class="stat-label">中奖记录</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="stat-total">¥0</div>
+        <div class="stat-label">累计投注</div>
+      </div>
+    </div>
+
+    <!-- 我的方案 -->
+    <div class="card">
+      <div class="card-title" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>我的方案</span>
+        <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-600); cursor: pointer;">
+          <input type="checkbox" id="select-all" onchange="toggleSelectAll()" style="width: 16px; height: 16px;">
+          全选
+        </label>
+      </div>
+      <div id="scheme-list" class="scheme-list">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">暂无方案记录</div>
+          <button class="btn btn-primary" style="margin-top: 16px;" onclick="location.href='../index.html'">去选号</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 功能菜单 -->
+    <div class="card">
+      <div class="menu-list">
+        <a href="#" class="menu-item" onclick="showToast('功能开发中'); return false;">
+          <span class="menu-icon">🏆</span>
+          <span class="menu-text">中奖记录</span>
+          <span class="menu-arrow">›</span>
+        </a>
+        <a href="#" class="menu-item" onclick="showToast('功能开发中'); return false;">
+          <span class="menu-icon">⭐</span>
+          <span class="menu-text">我的收藏</span>
+          <span class="menu-arrow">›</span>
+        </a>
+        <a href="#" class="menu-item" onclick="showToast('功能开发中'); return false;">
+          <span class="menu-icon">💰</span>
+          <span class="menu-text">资金管理</span>
+          <span class="menu-arrow">›</span>
+        </a>
+        <a href="#" class="menu-item" onclick="showToast('功能开发中'); return false;">
+          <span class="menu-icon">🔔</span>
+          <span class="menu-text">消息通知</span>
+          <span class="menu-arrow">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 设置 -->
+    <div class="card">
+      <div class="menu-list">
+        <a href="#" class="menu-item" onclick="showToast('功能开发中'); return false;">
+          <span class="menu-icon">⚙️</span>
+          <span class="menu-text">设置</span>
+          <span class="menu-arrow">›</span>
+        </a>
+        <a href="#" class="menu-item" onclick="showToast('功能开发中'); return false;">
+          <span class="menu-icon">❓</span>
+          <span class="menu-text">帮助与反馈</span>
+          <span class="menu-arrow">›</span>
+        </a>
+        <a href="#" class="menu-item" onclick="showToast('功能开发中'); return false;">
+          <span class="menu-icon">ℹ️</span>
+          <span class="menu-text">关于我们</span>
+          <span class="menu-arrow">›</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 版本信息 -->
+    <div class="version-info">
+      <p>竞彩门店通 v1.0.0</p>
+      <p>中国体育彩票门店服务助手</p>
+    </div>
+  </main>
+
+  <!-- 底部批量付款栏 -->
+  <div id="batch-pay-bar" style="display: none; position: fixed; bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom)); left: 0; right: 0; background: white; border-top: 1px solid var(--gray-200); padding: 12px 16px; z-index: 100;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <span style="font-size: 14px; color: var(--gray-600);">已选 </span>
+        <span id="selected-count" style="font-size: 18px; font-weight: 600; color: var(--primary-red);">0</span>
+        <span style="font-size: 14px; color: var(--gray-600);"> 个方案</span>
+        <span style="font-size: 14px; color: var(--gray-600); margin-left: 12px;">合计 </span>
+        <span id="selected-total" style="font-size: 18px; font-weight: 600; color: var(--primary-red);">¥0</span>
+      </div>
+      <button class="btn btn-primary" onclick="batchPay()" style="padding: 10px 24px;">去付款</button>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="match.html" class="nav-item">
+      <span class="nav-icon">⚽</span>
+      <span>赛事</span>
+    </a>
+    <a href="data.html" class="nav-item">
+      <span class="nav-icon">📊</span>
+      <span>数据</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="nav-icon">👤</span>
+      <span>我的</span>
+    </a>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- 批量付款确认弹窗 -->
+  <div id="batch-pay-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: flex-end;">
+    <div style="background: white; width: 100%; max-height: 80%; border-radius: 16px 16px 0 0; padding: 20px; animation: slideUp 0.3s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 600;">确认付款</h3>
+        <button onclick="closeBatchPayModal()" style="background: none; border: none; font-size: 24px; color: var(--gray-500);">×</button>
+      </div>
+      <input type="hidden" id="batch-scheme-ids">
+      <div style="background: var(--gray-50); padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
+        <div style="font-size: 14px; color: var(--gray-600); margin-bottom: 8px;">共选择 <span id="batch-count" style="font-weight: 600; color: var(--primary-red);">0</span> 个方案</div>
+      </div>
+      <div style="background: #fff3e0; padding: 16px; border-radius: 8px; margin: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 14px; color: var(--gray-600);">应付金额</span>
+          <span style="font-size: 28px; font-weight: 700; color: var(--primary-red);">¥<span id="batch-total">0</span></span>
+        </div>
+      </div>
+      <button onclick="confirmBatchPay()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-red), #ff4757); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600;">
+        确认支付
+      </button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
+
+  <script src="../js/app.js"></script>
+  <script>
+    // 加载方案列表
+    function loadSchemes() {
+      const schemes = schemeManager.getAll();
+      const container = document.getElementById('scheme-list');
+      
+      if (schemes.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <div class="empty-text">暂无方案记录</div>
+            <button class="btn btn-primary" style="margin-top: 16px;" onclick="location.href='../index.html'">去选号</button>
+          </div>
+        `;
+        updateStats([]);
+        return;
+      }
+      
+      let html = '';
+      schemes.slice(0, 10).forEach(scheme => {
+        const typeColors = {
+          daletou: 'tag-red',
+          pailie3: 'tag-blue',
+          pailie5: 'tag-blue',
+          renxuan9: 'tag-green',
+          football: 'tag-green',
+          basketball: 'tag-orange'
+        };
+        const typeNames = {
+          daletou: '大乐透',
+          pailie3: '排列三',
+          pailie5: '排列五',
+          renxuan9: '任选九',
+          football: '竞彩足球',
+          basketball: '竞彩篮球'
+        };
+        
+        const isUnpaid = scheme.status === 'unpaid';
+        const statusText = isUnpaid ? '<span style="color:#e60012;font-size:12px;margin-left:8px;">待付款</span>' : '<span style="color:#34a853;font-size:12px;margin-left:8px;">已付款</span>';
+        
+        html += `
+          <div class="scheme-item" style="display: flex; align-items: flex-start; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--gray-100);">
+            ${isUnpaid ? `<input type="checkbox" class="scheme-checkbox" data-id="${scheme.id}" data-amount="${scheme.amount || 2}" onchange="updateSelectedTotal()" style="width: 18px; height: 18px; margin-top: 2px; flex-shrink: 0;">` : '<div style="width: 18px; flex-shrink: 0;"></div>'}
+            <div style="flex: 1;" onclick="${isUnpaid ? '' : `showSchemeDetail('${scheme.id}')`}">
+              <div class="scheme-header" style="margin-bottom: 6px;">
+                <span class="scheme-type ${typeColors[scheme.type] || 'tag-red'}">${typeNames[scheme.type] || scheme.name}</span>
+                <span class="scheme-time">${new Date(scheme.createdAt).toLocaleDateString()}${statusText}</span>
+              </div>
+              <div class="scheme-content" style="font-size: 13px; color: var(--gray-600);">${scheme.description}</div>
+              ${isUnpaid ? `<div style="margin-top: 6px; font-size: 13px; color: var(--primary-red); font-weight: 600;">¥${scheme.amount || 2}</div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+      
+      // 更新统计
+      updateStats(schemes);
+    }
+    
+    // 更新统计数据
+    function updateStats(schemes) {
+      const totalSchemes = schemes.length;
+      const paidSchemes = schemes.filter(s => s.status === 'paid');
+      const winCount = paidSchemes.filter(s => s.winAmount > 0).length;
+      const totalAmount = paidSchemes.reduce((sum, s) => sum + (s.amount || 0), 0);
+      
+      document.getElementById('stat-schemes').textContent = totalSchemes;
+      document.getElementById('stat-wins').textContent = winCount;
+      document.getElementById('stat-total').textContent = '¥' + totalAmount;
+    }
+    
+    // 全选/取消全选
+    function toggleSelectAll() {
+      const selectAllCheckbox = document.getElementById('select-all');
+      const checkboxes = document.querySelectorAll('.scheme-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = selectAllCheckbox.checked;
+      });
+      updateSelectedTotal();
+    }
+    
+    // 更新选中总价
+    function updateSelectedTotal() {
+      const checkboxes = document.querySelectorAll('.scheme-checkbox:checked');
+      let total = 0;
+      checkboxes.forEach(cb => {
+        total += parseInt(cb.dataset.amount) || 2;
+      });
+      
+      document.getElementById('selected-count').textContent = checkboxes.length;
+      document.getElementById('selected-total').textContent = '¥' + total;
+      
+      // 显示/隐藏底部付款栏
+      const batchPayBar = document.getElementById('batch-pay-bar');
+      if (checkboxes.length > 0) {
+        batchPayBar.style.display = 'block';
+      } else {
+        batchPayBar.style.display = 'none';
+      }
+    }
+    
+    // 批量付款
+    function batchPay() {
+      const checkboxes = document.querySelectorAll('.scheme-checkbox:checked');
+      if (checkboxes.length === 0) {
+        showToast('请先选择要付款的方案');
+        return;
+      }
+      
+      let total = 0;
+      const selectedIds = [];
+      checkboxes.forEach(cb => {
+        selectedIds.push(cb.dataset.id);
+        total += parseInt(cb.dataset.amount) || 2;
+      });
+      
+      // 显示批量付款弹窗
+      document.getElementById('batch-scheme-ids').value = selectedIds.join(',');
+      document.getElementById('batch-count').textContent = checkboxes.length;
+      document.getElementById('batch-total').textContent = total;
+      document.getElementById('batch-pay-modal').style.display = 'flex';
+    }
+    
+    // 关闭批量付款弹窗
+    function closeBatchPayModal() {
+      document.getElementById('batch-pay-modal').style.display = 'none';
+    }
+    
+    // 确认批量付款
+    function confirmBatchPay() {
+      const ids = document.getElementById('batch-scheme-ids').value.split(',');
+      const schemes = schemeManager.getAll();
+      
+      ids.forEach(id => {
+        const index = schemes.findIndex(s => s.id === id);
+        if (index > -1) {
+          schemes[index].status = 'paid';
+        }
+      });
+      
+      schemeManager.save(schemes);
+      showToast('付款成功！共支付 ' + ids.length + ' 个方案');
+      closeBatchPayModal();
+      
+      // 重置选择
+      document.getElementById('select-all').checked = false;
+      document.getElementById('batch-pay-bar').style.display = 'none';
+      loadSchemes();
+    }
+    
+    // 显示方案详情
+    function showSchemeDetail(id) {
+      const schemes = schemeManager.getAll();
+      const scheme = schemes.find(s => s.id === id);
+      if (!scheme) return;
+      showToast('方案详情：' + scheme.description);
+    }
+    
+    // 初始化
+    loadSchemes();
+  </script>
+  
+  <style>
+    .user-section {
+      padding: 16px;
+    }
+    
+    .user-card {
+      background: linear-gradient(135deg, var(--primary-red) 0%, #ff4757 100%);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      color: var(--white);
+    }
+    
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin-right: 16px;
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .user-name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .user-id {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 0 16px 16px;
+    }
+    
+    .stat-item {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-red);
+      margin-bottom: 4px;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+    
+    .scheme-list {
+      padding: 8px 0;
+    }
+    
+    .scheme-item {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    
+    .scheme-item:last-child {
+      border-bottom: none;
+    }
+    
+    .scheme-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .scheme-type {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .scheme-time {
+      font-size: 12px;
+      color: var(--gray-400);
+    }
+    
+    .scheme-content {
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.5;
+    }
+    
+    .menu-list {
+      padding: 8px 0;
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      text-decoration: none;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+    
+    .menu-icon {
+      font-size: 20px;
+      margin-right: 12px;
+    }
+    
+    .menu-text {
+      flex: 1;
+      font-size: 15px;
+      color: var(--gray-800);
+    }
+    
+    .menu-arrow {
+      color: var(--gray-400);
+      font-size: 18px;
+    }
+    
+    .version-info {
+      text-align: center;
+      padding: 32px 20px 100px;
+    }
+    
+    .version-info p {
+      font-size: 12px;
+      color: var(--gray-400);
+      line-height: 1.8;
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#e60012">
+  <title>走势图 - 竞彩门店通</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .trend-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: var(--header-height); z-index: 100; }
+    .trend-tab { flex: 1; padding: 14px; text-align: center; font-size: 14px; color: var(--gray-600); border-bottom: 2px solid transparent; cursor: pointer; }
+    .trend-tab.active { color: var(--primary-red); border-bottom-color: var(--primary-red); font-weight: 500; }
+    .trend-content { display: none; padding: 16px; }
+    .trend-content.active { display: block; }
+    .chart-container { background: var(--white); border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+    .chart-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--gray-800); display: flex; justify-content: space-between; align-items: center; }
+    .chart-title-link { font-size: 12px; color: var(--primary-red); font-weight: normal; }
+    .stats-row { display: flex; gap: 12px; margin-bottom: 16px; }
+    .stat-card { flex: 1; background: var(--white); border-radius: 12px; padding: 16px 8px; text-align: center; box-shadow: var(--shadow-sm); }
+    .stat-value { font-size: 20px; font-weight: 700; color: var(--primary-red); margin-bottom: 4px; }
+    .stat-label { font-size: 11px; color: var(--gray-500); }
+    .history-row { display: flex; align-items: center; padding: 12px; background: var(--white); border-radius: 8px; margin-bottom: 8px; }
+    .history-issue { width: 70px; font-size: 12px; color: var(--gray-500); }
+    .history-balls { flex: 1; display: flex; gap: 6px; justify-content: center; }
+    .history-ball { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+    .history-ball.red { background: var(--primary-red); color: white; }
+    .history-ball.blue { background: var(--primary-blue); color: white; }
+    .history-sum { width: 50px; text-align: right; font-size: 12px; color: var(--gray-600); }
+    /* 冷热号分析 */
+    .hotcold-section { margin-top: 16px; }
+    .hotcold-title { font-size: 13px; color: var(--gray-600); margin-bottom: 10px; }
+    .hotcold-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .hotcold-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .hotcold-ball { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+    .hotcold-ball.hot { background: var(--primary-red); color: white; }
+    .hotcold-ball.warm { background: #ffccbc; color: #d84315; }
+    .hotcold-ball.cold { background: var(--gray-200); color: var(--gray-600); }
+    .hotcold-count { font-size: 10px; color: var(--gray-500); }
+    /* 遗漏分析 */
+    .yilou-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 12px; }
+    .yilou-item { text-align: center; padding: 8px 4px; background: var(--gray-50); border-radius: 8px; }
+    .yilou-num { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+    .yilou-val { font-size: 11px; color: var(--primary-red); margin-top: 2px; }
+    .yilou-item.high .yilou-val { color: var(--primary-red); font-weight: 600; }
+    /* 和值走势 */
+    .hezhi-chart { display: flex; align-items: flex-end; gap: 6px; height: 100px; margin-top: 16px; padding: 0 8px; }
+    .hezhi-bar { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .hezhi-fill { width: 100%; background: linear-gradient(to top, var(--primary-red), #ff6b6b); border-radius: 4px 4px 0 0; min-height: 20px; }
+    .hezhi-val { font-size: 10px; color: var(--gray-600); }
+    .hezhi-issue { font-size: 9px; color: var(--gray-400); }
+    /* 跨度分析 */
+    .kua-section { margin-top: 16px; }
+    .kua-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-100); }
+    .kua-row:last-child { border-bottom: none; }
+    .kua-label { width: 60px; font-size: 13px; color: var(--gray-600); }
+    .kua-bar-wrap { flex: 1; height: 20px; background: var(--gray-100); border-radius: 10px; overflow: hidden; margin: 0 12px; }
+    .kua-bar { height: 100%; background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue)); border-radius: 10px; }
+    .kua-count { width: 40px; font-size: 12px; color: var(--gray-600); text-align: right; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="../index.html" class="header-back">←</a>
+    <h1 class="header-title">走势图</h1>
+  </header>
+
+  <div class="trend-tabs">
+    <div class="trend-tab active" onclick="switchTab('daletou')">大乐透</div>
+    <div class="trend-tab" onclick="switchTab('pailie3')">排列三</div>
+    <div class="trend-tab" onclick="switchTab('pailie5')">排列五</div>
+  </div>
+
+  <main class="main-content" style="padding-top: calc(var(--header-height) + 48px);">
+    <!-- 大乐透 -->
+    <div id="daletou" class="trend-content active">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value">08</div><div class="stat-label">30期热号</div></div>
+        <div class="stat-card"><div class="stat-value">15</div><div class="stat-label">遗漏15期</div></div>
+        <div class="stat-card"><div class="stat-value">89</div><div class="stat-label">平均和值</div></div>
+        <div class="stat-card"><div class="stat-value">28</div><div class="stat-label">平均跨度</div></div>
+      </div>
+      
+      <div class="chart-container">
+        <div class="chart-title">近期开奖号码 <span class="chart-title-link">查看全部 ›</span></div>
+        <div class="history-row"><span class="history-issue">25045期</span><div class="history-balls"><span class="history-ball red">03</span><span class="history-ball red">08</span><span class="history-ball red">15</span><span class="history-ball red">22</span><span class="history-ball red">31</span><span class="history-ball blue">05</span><span class="history-ball blue">09</span></div><span class="history-sum">和79</span></div>
+        <div class="history-row"><span class="history-issue">25044期</span><div class="history-balls"><span class="history-ball red">05</span><span class="history-ball red">12</span><span class="history-ball red">18</span><span class="history-ball red">25</span><span class="history-ball red">33</span><span class="history-ball blue">02</span><span class="history-ball blue">07</span></div><span class="history-sum">和93</span></div>
+        <div class="history-row"><span class="history-issue">25043期</span><div class="history-balls"><span class="history-ball red">02</span><span class="history-ball red">09</span><span class="history-ball red">16</span><span class="history-ball red">28</span><span class="history-ball red">35</span><span class="history-ball blue">03</span><span class="history-ball blue">11</span></div><span class="history-sum">和90</span></div>
+        <div class="history-row"><span class="history-issue">25042期</span><div class="history-balls"><span class="history-ball red">07</span><span class="history-ball red">14</span><span class="history-ball red">21</span><span class="history-ball red">29</span><span class="history-ball red">34</span><span class="history-ball blue">01</span><span class="history-ball blue">06</span></div><span class="history-sum">和105</span></div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">冷热号分析（近30期）</div>
+        <div class="hotcold-section">
+          <div class="hotcold-title">🔥 热号（出现≥5次）</div>
+          <div class="hotcold-grid">
+            <div class="hotcold-item"><div class="hotcold-ball hot">08</div><div class="hotcold-count">8次</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball hot">15</div><div class="hotcold-count">7次</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball hot">22</div><div class="hotcold-count">6次</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball hot">03</div><div class="hotcold-count">6次</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball hot">25</div><div class="hotcold-count">5次</div></div>
+          </div>
+        </div>
+        <div class="hotcold-section">
+          <div class="hotcold-title">❄️ 冷号（遗漏≥10期）</div>
+          <div class="hotcold-grid">
+            <div class="hotcold-item"><div class="hotcold-ball cold">11</div><div class="hotcold-count">15期</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball cold">19</div><div class="hotcold-count">12期</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball cold">27</div><div class="hotcold-count">11期</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball cold">06</div><div class="hotcold-count">10期</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">前区遗漏分析</div>
+        <div class="yilou-grid">
+          <div class="yilou-item high"><div class="yilou-num">01</div><div class="yilou-val">3期</div></div>
+          <div class="yilou-item"><div class="yilou-num">02</div><div class="yilou-val">0期</div></div>
+          <div class="yilou-item"><div class="yilou-num">03</div><div class="yilou-val">0期</div></div>
+          <div class="yilou-item"><div class="yilou-num">04</div><div class="yilou-val">5期</div></div>
+          <div class="yilou-item"><div class="yilou-num">05</div><div class="yilou-val">1期</div></div>
+          <div class="yilou-item high"><div class="yilou-num">06</div><div class="yilou-val">10期</div></div>
+          <div class="yilou-item"><div class="yilou-num">07</div><div class="yilou-val">2期</div></div>
+          <div class="yilou-item"><div class="yilou-num">08</div><div class="yilou-val">0期</div></div>
+          <div class="yilou-item"><div class="yilou-num">09</div><div class="yilou-val">1期</div></div>
+          <div class="yilou-item"><div class="yilou-num">10</div><div class="yilou-val">4期</div></div>
+          <div class="yilou-item high"><div class="yilou-num">11</div><div class="yilou-val">15期</div></div>
+          <div class="yilou-item"><div class="yilou-num">12</div><div class="yilou-val">2期</div></div>
+          <div class="yilou-item"><div class="yilou-num">13</div><div class="yilou-val">6期</div></div>
+          <div class="yilou-item"><div class="yilou-num">14</div><div class="yilou-val">3期</div></div>
+          <div class="yilou-item"><div class="yilou-num">15</div><div class="yilou-val">0期</div></div>
+          <div class="yilou-item"><div class="yilou-num">16</div><div class="yilou-val">1期</div></div>
+          <div class="yilou-item"><div class="yilou-num">17</div><div class="yilou-val">4期</div></div>
+          <div class="yilou-item"><div class="yilou-num">18</div><div class="yilou-val">2期</div></div>
+          <div class="yilou-item high"><div class="yilou-num">19</div><div class="yilou-val">12期</div></div>
+          <div class="yilou-item"><div class="yilou-num">20</div><div class="yilou-val">5期</div></div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">和值走势（近10期）</div>
+        <div class="hezhi-chart">
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:60%"></div><div class="hezhi-val">79</div><div class="hezhi-issue">45期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:75%"></div><div class="hezhi-val">93</div><div class="hezhi-issue">44期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:72%"></div><div class="hezhi-val">90</div><div class="hezhi-issue">43期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:90%"></div><div class="hezhi-val">105</div><div class="hezhi-issue">42期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:55%"></div><div class="hezhi-val">72</div><div class="hezhi-issue">41期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:80%"></div><div class="hezhi-val">98</div><div class="hezhi-issue">40期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:65%"></div><div class="hezhi-val">82</div><div class="hezhi-issue">39期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:70%"></div><div class="hezhi-val">88</div><div class="hezhi-issue">38期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:85%"></div><div class="hezhi-val">100</div><div class="hezhi-issue">37期</div></div>
+          <div class="hezhi-bar"><div class="hezhi-fill" style="height:50%"></div><div class="hezhi-val">68</div><div class="hezhi-issue">36期</div></div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">跨度分析（近30期）</div>
+        <div class="kua-section">
+          <div class="kua-row"><span class="kua-label">跨度20-25</span><div class="kua-bar-wrap"><div class="kua-bar" style="width:35%"></div></div><span class="kua-count">12次</span></div>
+          <div class="kua-row"><span class="kua-label">跨度15-19</span><div class="kua-bar-wrap"><div class="kua-bar" style="width:28%"></div></div><span class="kua-count">9次</span></div>
+          <div class="kua-row"><span class="kua-label">跨度26-30</span><div class="kua-bar-wrap"><div class="kua-bar" style="width:20%"></div></div><span class="kua-count">6次</span></div>
+          <div class="kua-row"><span class="kua-label">跨度10-14</span><div class="kua-bar-wrap"><div class="kua-bar" style="width:12%"></div></div><span class="kua-count">3次</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 排列三 -->
+    <div id="pailie3" class="trend-content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value">5</div><div class="stat-label">30期热号</div></div>
+        <div class="stat-card"><div class="stat-value">9</div><div class="stat-label">遗漏18期</div></div>
+        <div class="stat-card"><div class="stat-value">12</div><div class="stat-label">平均和值</div></div>
+        <div class="stat-card"><div class="stat-value">6</div><div class="stat-label">平均跨度</div></div>
+      </div>
+      
+      <div class="chart-container">
+        <div class="chart-title">近期开奖号码</div>
+        <div class="history-row"><span class="history-issue">25045期</span><div class="history-balls"><span class="history-ball red">3</span><span class="history-ball red">5</span><span class="history-ball red">8</span></div><span class="history-sum">和16</span></div>
+        <div class="history-row"><span class="history-issue">25044期</span><div class="history-balls"><span class="history-ball red">1</span><span class="history-ball red">5</span><span class="history-ball red">6</span></div><span class="history-sum">和12</span></div>
+        <div class="history-row"><span class="history-issue">25043期</span><div class="history-balls"><span class="history-ball red">2</span><span class="history-ball red">4</span><span class="history-ball red">9</span></div><span class="history-sum">和15</span></div>
+        <div class="history-row"><span class="history-issue">25042期</span><div class="history-balls"><span class="history-ball red">5</span><span class="history-ball red">5</span><span class="history-ball red">7</span></div><span class="history-sum">和17</span></div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">冷热号分析（近30期）</div>
+        <div class="hotcold-section">
+          <div class="hotcold-title">🔥 热号</div>
+          <div class="hotcold-grid">
+            <div class="hotcold-item"><div class="hotcold-ball hot">5</div><div class="hotcold-count">12次</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball hot">3</div><div class="hotcold-count">9次</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball hot">8</div><div class="hotcold-count">8次</div></div>
+          </div>
+        </div>
+        <div class="hotcold-section">
+          <div class="hotcold-title">❄️ 冷号</div>
+          <div class="hotcold-grid">
+            <div class="hotcold-item"><div class="hotcold-ball cold">9</div><div class="hotcold-count">18期</div></div>
+            <div class="hotcold-item"><div class="hotcold-ball cold">0</div><div class="hotcold-count">15期</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">定位遗漏</div>
+        <div class="yilou-grid">
+          <div class="yilou-item"><div class="yilou-num">百位1</div><div class="yilou-val">5期</div></div>
+          <div class="yilou-item"><div class="yilou-num">百位3</div><div class="yilou-val">2期</div></div>
+          <div class="yilou-item"><div class="yilou-num">百位5</div><div class="yilou-val">0期</div></div>
+          <div class="yilou-item high"><div class="yilou-num">百位9</div><div class="yilou-val">12期</div></div>
+          <div class="yilou-item"><div class="yilou-num">十位2</div><div class="yilou-val">3期</div></div>
+          <div class="yilou-item"><div class="yilou-num">十位4</div><div class="yilou-val">1期</div></div>
+          <div class="yilou-item"><div class="yilou-num">十位5</div><div class="yilou-val">0期</div></div>
+          <div class="yilou-item"><div class="yilou-num">十位8</div><div class="yilou-val">4期</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 排列五 -->
+    <div id="pailie5" class="trend-content">
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">30期热号</div></div>
+        <div class="stat-card"><div class="stat-value">7</div><div class="stat-label">遗漏22期</div></div>
+        <div class="stat-card"><div class="stat-value">23</div><div class="stat-label">平均和值</div></div>
+        <div class="stat-card"><div class="stat-value">8</div><div class="stat-label">平均跨度</div></div>
+      </div>
+      
+      <div class="chart-container">
+        <div class="chart-title">近期开奖号码</div>
+        <div class="history-row"><span class="history-issue">25045期</span><div class="history-balls"><span class="history-ball red">3</span><span class="history-ball red">5</span><span class="history-ball red">8</span><span class="history-ball red">1</span><span class="history-ball red">6</span></div><span class="history-sum">和23</span></div>
+        <div class="history-row"><span class="history-issue">25044期</span><div class="history-balls"><span class="history-ball red">1</span><span class="history-ball red">5</span><span class="history-ball red">6</span><span class="history-ball red">2</span><span class="history-ball red">9</span></div><span class="history-sum">和23</span></div>
+        <div class="history-row"><span class="history-issue">25043期</span><div class="history-balls"><span class="history-ball red">2</span><span class="history-ball red">4</span><span class="history-ball red">9</span><span class="history-ball red">3</span><span class="history-ball red">5</span></div><span class="history-sum">和23</span></div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title">万位走势</div>
+        <div class="hotcold-grid">
+          <div class="hotcold-item"><div class="hotcold-ball hot">3</div><div class="hotcold-count">10次</div></div>
+          <div class="hotcold-item"><div class="hotcold-ball hot">1</div><div class="hotcold-count">8次</div></div>
+          <div class="hotcold-item"><div class="hotcold-ball warm">2</div><div class="hotcold-count">6次</div></div>
+          <div class="hotcold-item"><div class="hotcold-ball cold">7</div><div class="hotcold-count">22期</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.trend-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.trend-content').forEach(content => content.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    }
+  </script>
+</body>
+</html>

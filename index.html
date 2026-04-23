@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="竞彩门店通">
+  <meta name="description" content="中国体育彩票门店服务助手">
+  <title>竞彩门店通</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" width="32" height="32">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div class="logo-title">竞彩门店通</div>
+        <div class="logo-subtitle">中国体育彩票</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 公益金展示 -->
+    <div class="welfare-banner">
+      <div class="welfare-content">
+        <div class="welfare-label">体彩公益金累计筹集</div>
+        <div class="welfare-amount">10083.38亿元</div>
+        <div class="welfare-slogan">每一张彩票都是一份爱心</div>
+      </div>
+    </div>
+
+    <!-- 今日开奖 -->
+    <div class="card">
+      <div class="card-title">
+        今日开奖
+        <span class="card-more" onclick="showToast('查看全部')">全部 ›</span>
+      </div>
+      <div class="lottery-list">
+        <div class="lottery-item-row">
+          <div class="lottery-info">
+            <span class="lottery-tag tag-red">大乐透</span>
+            <span class="lottery-issue">25001期</span>
+          </div>
+          <div class="lottery-time">21:25开奖</div>
+        </div>
+        <div class="lottery-item-row">
+          <div class="lottery-info">
+            <span class="lottery-tag tag-blue">排列三</span>
+            <span class="lottery-issue">25001期</span>
+          </div>
+          <div class="lottery-time">20:30开奖</div>
+        </div>
+        <div class="lottery-item-row">
+          <div class="lottery-info">
+            <span class="lottery-tag tag-green">排列五</span>
+            <span class="lottery-issue">25001期</span>
+          </div>
+          <div class="lottery-time">20:30开奖</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 彩种快捷入口 -->
+    <div class="card">
+      <div class="card-title">选号投注</div>
+      <div class="lottery-grid">
+        <a href="pages/football.html" class="lottery-item football">
+          <div class="lottery-icon">⚽</div>
+          <div class="lottery-name">竞彩足球</div>
+        </a>
+        <a href="pages/basketball.html" class="lottery-item basketball">
+          <div class="lottery-icon">🏀</div>
+          <div class="lottery-name">竞彩篮球</div>
+        </a>
+        <a href="pages/daletou.html" class="lottery-item daletou">
+          <div class="lottery-icon">🎯</div>
+          <div class="lottery-name">大乐透</div>
+        </a>
+        <a href="pages/pailie3.html" class="lottery-item pailie3">
+          <div class="lottery-icon">3️⃣</div>
+          <div class="lottery-name">排列三</div>
+        </a>
+        <a href="pages/renxuan9.html" class="lottery-item renxuan9">
+          <div class="lottery-icon">9️⃣</div>
+          <div class="lottery-name">任选九</div>
+        </a>
+        <a href="pages/pailie5.html" class="lottery-item pailie5">
+          <div class="lottery-icon">5️⃣</div>
+          <div class="lottery-name">排列五</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- 快捷功能 -->
+    <div class="card">
+      <div class="card-title">快捷服务</div>
+      <div class="quick-actions">
+        <a href="pages/kaijiang.html" class="quick-item">
+          <div class="quick-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">🏆</div>
+          <span>开奖结果</span>
+        </a>
+        <a href="pages/zoushi.html" class="quick-item">
+          <div class="quick-icon" style="background: linear-gradient(135deg, #4ecdc4, #44a3aa);">📊</div>
+          <span>走势图</span>
+        </a>
+        <a href="pages/calculator.html" class="quick-item">
+          <div class="quick-icon" style="background: linear-gradient(135deg, #f9ca24, #f0932b);">🧮</div>
+          <span>奖金计算</span>
+        </a>
+        <a href="pages/qiandao.html" class="quick-item">
+          <div class="quick-icon" style="background: linear-gradient(135deg, #00b894, #00cec9);">📅</div>
+          <span>签到管理</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 最新公告 -->
+    <div class="card">
+      <div class="card-title">
+        最新公告
+        <span class="card-more" onclick="showToast('查看更多')">更多 ›</span>
+      </div>
+      <div class="notice-list">
+        <a href="#" class="notice-item" onclick="showToast('查看详情'); return false;">
+          <span class="notice-dot"></span>
+          <span class="notice-text">关于2026年春节体育彩票休市安排的公告</span>
+        </a>
+        <a href="#" class="notice-item" onclick="showToast('查看详情'); return false;">
+          <span class="notice-dot"></span>
+          <span class="notice-text">排列3游戏风险控制方案</span>
+        </a>
+        <a href="#" class="notice-item" onclick="showToast('查看详情'); return false;">
+          <span class="notice-dot"></span>
+          <span class="notice-text">理性购彩 量力而行</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- 底部提示 -->
+    <div class="footer-notice">
+      <p>本应用仅供信息查询，购彩请到实体店</p>
+      <p>理性购彩，量力而行</p>
+    </div>
+  </main>
+
+  <!-- 底部Tab导航 -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="pages/match.html" class="nav-item">
+      <span class="nav-icon">⚽</span>
+      <span>赛事</span>
+    </a>
+    <a href="pages/data.html" class="nav-item">
+      <span class="nav-icon">📊</span>
+      <span>数据</span>
+    </a>
+    <a href="pages/kefu.html" class="nav-item">
+      <span class="nav-icon">💬</span>
+      <span>客服</span>
+    </a>
+  </nav>
+
+  <!-- Toast提示 -->
+  <div id="toast" class="toast"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    // 注册Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then((reg) => console.log('Service Worker 注册成功'))
+        .catch((err) => console.log('Service Worker 注册失败:', err));
+    }
+  </script>
+</body>
+</html>

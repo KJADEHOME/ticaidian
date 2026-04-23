@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>签到管理 - 竞彩门店通</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* 签到页面专用样式 */
+    .qiandao-header {
+      background: linear-gradient(135deg, #e60012 0%, #ff4757 100%);
+      padding: 24px 16px;
+      text-align: center;
+      color: #fff;
+    }
+    
+    .qiandao-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .qiandao-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+    
+    .qiandao-stat {
+      text-align: center;
+    }
+    
+    .qiandao-stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    
+    .qiandao-stat-label {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 4px;
+    }
+    
+    /* 日历 */
+    .calendar-card {
+      background: #fff;
+      margin: 12px;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .calendar-month {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .calendar-nav {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .calendar-nav-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: #f5f5f5;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .calendar-weekday {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      padding: 8px 0;
+    }
+    
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 14px;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .calendar-day.other-month {
+      color: #ccc;
+    }
+    
+    .calendar-day.today {
+      background: #fff2f3;
+      color: #e60012;
+      font-weight: 600;
+    }
+    
+    .calendar-day.signed {
+      background: #e60012;
+      color: #fff;
+    }
+    
+    .calendar-day.signed::after {
+      content: '✓';
+      position: absolute;
+      bottom: 2px;
+      font-size: 10px;
+    }
+    
+    /* 签到按钮 */
+    .qiandao-btn-section {
+      padding: 16px 12px;
+    }
+    
+    .btn-qiandao {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #e60012 0%, #ff4757 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(230,0,18,0.3);
+    }
+    
+    .btn-qiandao:disabled {
+      background: #ccc;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+    
+    .btn-qiandao.signed {
+      background: #52c41a;
+      box-shadow: 0 4px 12px rgba(82,196,26,0.3);
+    }
+    
+    /* 签到记录 */
+    .records-card {
+      background: #fff;
+      margin: 0 12px 12px;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    
+    .records-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .record-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .record-item:last-child {
+      border-bottom: none;
+    }
+    
+    .record-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .record-icon {
+      width: 36px;
+      height: 36px;
+      background: #fff2f3;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    
+    .record-text {
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .record-time {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+    
+    .record-status {
+      font-size: 13px;
+      color: #e60012;
+      font-weight: 500;
+    }
+    
+    .record-status.signed {
+      color: #52c41a;
+    }
+    
+    /* 规则说明 */
+    .rules-card {
+      background: #fff;
+      margin: 0 12px 80px;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    
+    .rules-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    
+    .rules-list {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+    }
+    
+    .rules-list li {
+      margin-bottom: 4px;
+    }
+    
+    /* 空状态 */
+    .empty-state-small {
+      text-align: center;
+      padding: 24px;
+      color: #999;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <a href="../index.html" class="header-back">‹</a>
+    <div class="header-title">签到管理</div>
+  </header>
+
+  <!-- 签到统计 -->
+  <div class="qiandao-header">
+    <div class="qiandao-title">本月签到</div>
+    <div class="qiandao-stats">
+      <div class="qiandao-stat">
+        <div class="qiandao-stat-value" id="monthCount">0</div>
+        <div class="qiandao-stat-label">本月签到</div>
+      </div>
+      <div class="qiandao-stat">
+        <div class="qiandao-stat-value" id="totalCount">0</div>
+        <div class="qiandao-stat-label">累计签到</div>
+      </div>
+      <div class="qiandao-stat">
+        <div class="qiandao-stat-value" id="beanCount">0</div>
+        <div class="qiandao-stat-label">我的金豆</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日历 -->
+  <div class="calendar-card">
+    <div class="calendar-header">
+      <div class="calendar-month" id="currentMonth">2026年4月</div>
+      <div class="calendar-nav">
+        <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+        <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+      </div>
+    </div>
+    <div class="calendar-weekdays">
+      <div class="calendar-weekday">日</div>
+      <div class="calendar-weekday">一</div>
+      <div class="calendar-weekday">二</div>
+      <div class="calendar-weekday">三</div>
+      <div class="calendar-weekday">四</div>
+      <div class="calendar-weekday">五</div>
+      <div class="calendar-weekday">六</div>
+    </div>
+    <div class="calendar-days" id="calendarDays">
+      <!-- 动态生成 -->
+    </div>
+  </div>
+
+  <!-- 签到按钮 -->
+  <div class="qiandao-btn-section">
+    <button class="btn-qiandao" id="qiandaoBtn" onclick="doQiandao()">
+      立即签到
+    </button>
+  </div>
+
+  <!-- 最近记录 -->
+  <div class="records-card">
+    <div class="records-title">最近签到</div>
+    <div id="recordsList">
+      <div class="empty-state-small">暂无签到记录</div>
+    </div>
+  </div>
+
+  <!-- 金豆说明 -->
+  <div class="rules-card">
+    <div class="rules-title">金豆奖励规则</div>
+    <ul class="rules-list">
+      <li>• 第1天签到：1金豆</li>
+      <li>• 第2天签到：2金豆</li>
+      <li>• 第3天签到：3金豆</li>
+      <li>• 第4天签到：4金豆</li>
+      <li>• 第5天签到：5金豆</li>
+      <li>• 第6天签到：6金豆</li>
+      <li>• 第7天及以上：7金豆</li>
+      <li>• 断签后从第1天重新开始计算</li>
+    </ul>
+  </div>
+
+  <!-- Toast提示 -->
+  <div id="toast" class="toast"></div>
+
+  <script src="../js/app.js"></script>
+  <script>
+    // 当前显示的月份
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    
+    // 获取签到记录
+    function getQiandaoRecords() {
+      const records = localStorage.getItem('qiandao_records');
+      return records ? JSON.parse(records) : [];
+    }
+    
+    // 保存签到记录
+    function saveQiandaoRecords(records) {
+      localStorage.setItem('qiandao_records', JSON.stringify(records));
+    }
+    
+    // 检查今天是否已签到
+    function isTodaySigned() {
+      const records = getQiandaoRecords();
+      const today = new Date().toDateString();
+      return records.some(r => new Date(r.date).toDateString() === today);
+    }
+    
+    // 渲染日历
+    function renderCalendar() {
+      const year = currentYear;
+      const month = currentMonth;
+      
+      // 更新月份标题
+      document.getElementById('currentMonth').textContent = 
+        `${year}年${month + 1}月`;
+      
+      // 获取当月第一天和最后一天
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const daysInMonth = lastDay.getDate();
+      const startDayOfWeek = firstDay.getDay();
+      
+      // 获取签到记录
+      const records = getQiandaoRecords();
+      const signedDates = records.map(r => new Date(r.date).toDateString());
+      
+      // 生成日历HTML
+      let html = '';
+      
+      // 上月填充
+      const prevMonthLastDay = new Date(year, month, 0).getDate();
+      for (let i = startDayOfWeek - 1; i >= 0; i--) {
+        html += `<div class="calendar-day other-month">${prevMonthLastDay - i}</div>`;
+      }
+      
+      // 当月日期
+      const today = new Date();
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dateStr = date.toDateString();
+        const isToday = date.toDateString() === today.toDateString();
+        const isSigned = signedDates.includes(dateStr);
+        
+        let className = 'calendar-day';
+        if (isToday) className += ' today';
+        if (isSigned) className += ' signed';
+        
+        html += `<div class="${className}">${day}</div>`;
+      }
+      
+      // 下月填充
+      const remainingCells = (7 - ((startDayOfWeek + daysInMonth) % 7)) % 7;
+      for (let day = 1; day <= remainingCells; day++) {
+        html += `<div class="calendar-day other-month">${day}</div>`;
+      }
+      
+      document.getElementById('calendarDays').innerHTML = html;
+    }
+    
+    // 切换月份
+    function changeMonth(delta) {
+      currentMonth += delta;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      } else if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      renderCalendar();
+    }
+    
+    // 计算连续签到天数（用于金豆奖励）
+    function calcContinuousDays() {
+      const records = getQiandaoRecords();
+      const today = new Date();
+      
+      if (records.length === 0) return 0;
+      
+      const sortedDates = records
+        .map(r => new Date(r.date))
+        .sort((a, b) => b - a);
+      
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      // 检查今天或昨天是否有签到
+      const lastSigned = sortedDates[0];
+      const isConsecutive = lastSigned.toDateString() === today.toDateString() ||
+                           lastSigned.toDateString() === yesterday.toDateString();
+      
+      if (!isConsecutive) return 0;
+      
+      let continuousCount = 1;
+      for (let i = 1; i < sortedDates.length; i++) {
+        const curr = sortedDates[i - 1];
+        const prev = sortedDates[i];
+        const diffDays = Math.floor((curr - prev) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) {
+          continuousCount++;
+        } else {
+          break;
+        }
+      }
+      return continuousCount;
+    }
+    
+    // 计算今日应得金豆数
+    function calcTodayBeans() {
+      const continuousDays = calcContinuousDays();
+      // 第1天1个，第2天2个...第7天7个，之后都是7个
+      return Math.min(continuousDays + 1, 7);
+    }
+    
+    // 获取金豆总数
+    function getTotalBeans() {
+      const beans = localStorage.getItem('qiandao_beans');
+      return beans ? parseInt(beans) : 0;
+    }
+    
+    // 保存金豆
+    function saveBeans(count) {
+      localStorage.setItem('qiandao_beans', count);
+    }
+    
+    // 更新统计
+    function updateStats() {
+      const records = getQiandaoRecords();
+      const today = new Date();
+      
+      // 本月签到数
+      const monthCount = records.filter(r => {
+        const d = new Date(r.date);
+        return d.getFullYear() === today.getFullYear() && 
+               d.getMonth() === today.getMonth();
+      }).length;
+      
+      // 累计签到数
+      const totalCount = records.length;
+      
+      // 金豆总数
+      const beanCount = getTotalBeans();
+      
+      document.getElementById('monthCount').textContent = monthCount;
+      document.getElementById('totalCount').textContent = totalCount;
+      document.getElementById('beanCount').textContent = beanCount;
+    }
+    
+    // 更新签到按钮状态
+    function updateQiandaoBtn() {
+      const btn = document.getElementById('qiandaoBtn');
+      if (isTodaySigned()) {
+        btn.textContent = '今日已签到';
+        btn.classList.add('signed');
+        btn.disabled = true;
+      } else {
+        const todayBeans = calcTodayBeans();
+        btn.textContent = `立即签到 (+${todayBeans}金豆)`;
+        btn.classList.remove('signed');
+        btn.disabled = false;
+      }
+    }
+    
+    // 执行签到
+    function doQiandao() {
+      if (isTodaySigned()) {
+        showToast('今天已经签到过了');
+        return;
+      }
+      
+      // 计算今日金豆奖励
+      const todayBeans = calcTodayBeans();
+      
+      // 保存签到记录
+      const records = getQiandaoRecords();
+      records.push({
+        date: new Date().toISOString(),
+        type: 'manual',
+        beans: todayBeans
+      });
+      saveQiandaoRecords(records);
+      
+      // 累加金豆
+      const totalBeans = getTotalBeans() + todayBeans;
+      saveBeans(totalBeans);
+      
+      showToast(`签到成功！获得${todayBeans}金豆`);
+      renderCalendar();
+      updateStats();
+      updateQiandaoBtn();
+      renderRecords();
+    }
+    
+    // 渲染最近记录
+    function renderRecords() {
+      const records = getQiandaoRecords();
+      const container = document.getElementById('recordsList');
+      
+      if (records.length === 0) {
+        container.innerHTML = '<div class="empty-state-small">暂无签到记录</div>';
+        return;
+      }
+      
+      // 取最近7条记录，按时间倒序
+      const recentRecords = records
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 7);
+      
+      const html = recentRecords.map(record => {
+        const date = new Date(record.date);
+        const dateStr = `${date.getMonth() + 1}月${date.getDate()}日`;
+        const timeStr = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+        const beans = record.beans || 0;
+        
+        return `
+          <div class="record-item">
+            <div class="record-info">
+              <div class="record-icon">📅</div>
+              <div>
+                <div class="record-text">每日签到</div>
+                <div class="record-time">${dateStr} ${timeStr}</div>
+              </div>
+            </div>
+            <div class="record-status signed">+${beans}金豆</div>
+          </div>
+        `;
+      }).join('');
+      
+      container.innerHTML = html;
+    }
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCalendar();
+      updateStats();
+      updateQiandaoBtn();
+      renderRecords();
+    });
+  </script>
+</body>
+</html>

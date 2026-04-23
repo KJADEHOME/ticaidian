@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>竞彩足球 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <a href="../index.html" class="header-back">‹</a>
+    <div class="header-logo-center">
+      <div class="logo-icon-small">
+        <svg viewBox="0 0 40 40" width="24" height="24">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">竞彩足球</span>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 玩法说明 -->
+    <div class="card">
+      <div class="card-title">玩法说明</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <span class="tag tag-red">胜平负</span>
+        <span class="tag tag-blue">让球胜平负</span>
+        <span class="tag tag-green">比分</span>
+        <span class="tag tag-red">总进球</span>
+        <span class="tag tag-blue">半全场</span>
+        <span class="tag tag-green">混合过关</span>
+      </div>
+    </div>
+
+    <!-- 日期选择 -->
+    <div class="card">
+      <div class="card-title">比赛日期</div>
+      <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px;">
+        <button class="btn btn-primary" style="flex-shrink: 0; padding: 8px 16px;">今日</button>
+        <button class="btn btn-outline" style="flex-shrink: 0; padding: 8px 16px;">周四</button>
+        <button class="btn btn-outline" style="flex-shrink: 0; padding: 8px 16px;">周五</button>
+        <button class="btn btn-outline" style="flex-shrink: 0; padding: 8px 16px;">周六</button>
+      </div>
+    </div>
+
+    <!-- 赛事列表 -->
+    <div class="card">
+      <div class="card-title">今日赛事</div>
+      
+      <!-- 赛事1 -->
+      <div style="border-bottom: 1px solid var(--gray-100); padding: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 12px; color: var(--gray-500);">周一001 · 英超</span>
+          <span style="font-size: 12px; color: var(--gray-500);">22:00开赛</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <div style="text-align: center; flex: 1;">
+            <div style="font-size: 20px; margin-bottom: 4px;">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+            <div style="font-size: 14px; font-weight: 500;">阿森纳</div>
+          </div>
+          <div style="text-align: center; padding: 0 16px;">
+            <div style="font-size: 12px; color: var(--gray-400);">VS</div>
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <div style="font-size: 20px; margin-bottom: 4px;">🏴󠁧󠁢󠁥󠁮󠁧󠁿</div>
+            <div style="font-size: 14px; font-weight: 500;">切尔西</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+          <button class="match-btn btn btn-outline" data-match="1" data-type="主胜" data-odds="1.85" style="padding: 10px; font-size: 13px;" onclick="toggleMatch(this)">
+            <div>主胜</div>
+            <div style="font-weight: 600;">1.85</div>
+          </button>
+          <button class="match-btn btn btn-outline" data-match="1" data-type="平" data-odds="3.45" style="padding: 10px; font-size: 13px;" onclick="toggleMatch(this)">
+            <div>平</div>
+            <div style="font-weight: 600;">3.45</div>
+          </button>
+          <button class="match-btn btn btn-outline" data-match="1" data-type="客胜" data-odds="4.20" style="padding: 10px; font-size: 13px;" onclick="toggleMatch(this)">
+            <div>客胜</div>
+            <div style="font-weight: 600;">4.20</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 赛事2 -->
+      <div style="padding: 16px 0 0 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span style="font-size: 12px; color: var(--gray-500);">周一002 · 西甲</span>
+          <span style="font-size: 12px; color: var(--gray-500);">23:00开赛</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+          <div style="text-align: center; flex: 1;">
+            <div style="font-size: 20px; margin-bottom: 4px;">🇪🇸</div>
+            <div style="font-size: 14px; font-weight: 500;">皇马</div>
+          </div>
+          <div style="text-align: center; padding: 0 16px;">
+            <div style="font-size: 12px; color: var(--gray-400);">VS</div>
+          </div>
+          <div style="text-align: center; flex: 1;">
+            <div style="font-size: 20px; margin-bottom: 4px;">🇪🇸</div>
+            <div style="font-size: 14px; font-weight: 500;">巴萨</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+          <button class="match-btn btn btn-outline" data-match="2" data-type="主胜" data-odds="2.10" style="padding: 10px; font-size: 13px;" onclick="toggleMatch(this)">
+            <div>主胜</div>
+            <div style="font-weight: 600;">2.10</div>
+          </button>
+          <button class="match-btn btn btn-outline" data-match="2" data-type="平" data-odds="3.20" style="padding: 10px; font-size: 13px;" onclick="toggleMatch(this)">
+            <div>平</div>
+            <div style="font-weight: 600;">3.20</div>
+          </button>
+          <button class="match-btn btn btn-outline" data-match="2" data-type="客胜" data-odds="3.50" style="padding: 10px; font-size: 13px;" onclick="toggleMatch(this)">
+            <div>客胜</div>
+            <div style="font-weight: 600;">3.50</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 空状态（更多赛事） -->
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div class="empty-text">更多赛事数据接入中...</div>
+    </div>
+  </main>
+
+  <!-- 底部操作栏 -->
+  <div style="position: fixed; bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom)); left: 0; right: 0; background: var(--white); border-top: 1px solid var(--gray-200); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 100;">
+    <div>
+      <span style="font-size: 14px; color: var(--gray-600);">已选 </span>
+      <span id="selected-count" style="font-size: 18px; font-weight: 600; color: var(--primary-red);">0</span>
+      <span style="font-size: 14px; color: var(--gray-600);"> 场</span>
+    </div>
+    <button class="btn btn-primary" onclick="showPayment()">生成方案</button>
+  </div>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="football.html" class="nav-item active">
+      <span class="nav-icon">⚽</span>
+      <span>足球</span>
+    </a>
+    <a href="basketball.html" class="nav-item">
+      <span class="nav-icon">🏀</span>
+      <span>篮球</span>
+    </a>
+    <a href="kefu.html" class="nav-item">
+      <span class="nav-icon">💬</span>
+      <span>客服</span>
+    </a>
+  </nav>
+
+  <div id="toast" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 9999;"></div>
+
+  <!-- 付款确认弹窗 -->
+  <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: flex-end;">
+    <div style="background: white; width: 100%; max-height: 80%; border-radius: 16px 16px 0 0; padding: 20px; animation: slideUp 0.3s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 600;">确认投注</h3>
+        <button onclick="closePaymentModal()" style="background: none; border: none; font-size: 24px; color: var(--gray-500);">×</button>
+      </div>
+      
+      <!-- 投注信息 -->
+      <div style="background: var(--gray-50); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <div style="font-size: 14px; color: var(--gray-600);">竞彩足球</div>
+        <div id="modal-matches" style="font-size: 13px; color: var(--gray-500); margin-top: 4px;">已选0场</div>
+      </div>
+      
+      <!-- 投注内容 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 8px;">投注内容</div>
+        <div id="modal-selection" style="font-size: 14px; max-height: 100px; overflow-y: auto;"></div>
+      </div>
+      
+      <!-- 倍数选择 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 10px;">投注倍数</div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="multiplier-btn active" data-value="1" onclick="setMultiplier(1)" style="width: 48px; height: 36px; border: 2px solid var(--primary-red); background: var(--primary-red); color: white; border-radius: 6px; font-weight: 600;">1倍</button>
+          <button class="multiplier-btn" data-value="5" onclick="setMultiplier(5)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">5倍</button>
+          <button class="multiplier-btn" data-value="10" onclick="setMultiplier(10)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">10倍</button>
+          <button class="multiplier-btn" data-value="50" onclick="setMultiplier(50)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">50倍</button>
+          <button class="multiplier-btn" data-value="100" onclick="setMultiplier(100)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">100倍</button>
+        </div>
+      </div>
+      
+      <!-- 金额汇总 -->
+      <div style="background: #fff3e0; padding: 16px; border-radius: 8px; margin: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 14px; color: var(--gray-600);">应付金额</span>
+          <span style="font-size: 24px; font-weight: 700; color: var(--primary-red);">¥<span id="modal-amount">2</span></span>
+        </div>
+        <div style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">
+          <span id="modal-detail">1注 × 1倍 = 2元</span>
+        </div>
+      </div>
+      
+      <!-- 支付按钮 -->
+      <button onclick="confirmPayment()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-red), #ff4757); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600;">
+        确认支付
+      </button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .match-btn.selected {
+      background: var(--primary-red) !important;
+      color: white !important;
+      border-color: var(--primary-red) !important;
+    }
+  </style>
+
+  <script src="../js/app.js"></script>
+  <script>
+    let selectedMatches = [];
+    let currentMultiplier = 1;
+    let currentOrder = null;
+
+    // 切换赛事选择
+    function toggleMatch(btn) {
+      const matchId = btn.dataset.match;
+      const type = btn.dataset.type;
+      const odds = btn.dataset.odds;
+      
+      // 同赛事其他选项取消
+      document.querySelectorAll(`.match-btn[data-match="${matchId}"]`).forEach(b => {
+        b.classList.remove('selected');
+        b.style.background = '';
+        b.style.color = '';
+        b.style.borderColor = '';
+      });
+      
+      // 检查是否已选
+      const index = selectedMatches.findIndex(m => m.matchId === matchId);
+      if (index > -1 && selectedMatches[index].type === type) {
+        // 取消选择
+        selectedMatches.splice(index, 1);
+      } else {
+        // 添加选择
+        if (index > -1) selectedMatches.splice(index, 1);
+        selectedMatches.push({ matchId, type, odds, matchName: getMatchName(matchId) });
+        btn.classList.add('selected');
+      }
+      
+      updateSelectedCount();
+    }
+    
+    // 获取赛事名称
+    function getMatchName(matchId) {
+      const names = { '1': '阿森纳vs切尔西', '2': '皇马vs巴萨' };
+      return names[matchId] || '未知赛事';
+    }
+    
+    // 更新选择计数
+    function updateSelectedCount() {
+      document.getElementById('selected-count').textContent = selectedMatches.length;
+    }
+    
+    // 显示付款弹窗
+    function showPayment() {
+      if (selectedMatches.length === 0) {
+        showToast('请先选择比赛');
+        return;
+      }
+      
+      currentOrder = {
+        type: 'football',
+        name: '竞彩足球',
+        matches: [...selectedMatches],
+        issue: getCurrentIssue(),
+        multiplier: 1,
+        amount: 2 * selectedMatches.length,
+        status: 'pending',
+        winAmount: 0,
+        createTime: new Date().toISOString(),
+        description: selectedMatches.map(m => `${m.matchName} ${m.type}`).join(', ')
+      };
+      
+      document.getElementById('modal-matches').textContent = `已选${selectedMatches.length}场`;
+      document.getElementById('modal-selection').innerHTML = selectedMatches.map(m => 
+        `<div style="margin-bottom: 4px;">${m.matchName} <span style="color: var(--primary-red);">${m.type}</span> @${m.odds}</div>`
+      ).join('');
+      
+      currentMultiplier = 1;
+      setMultiplier(1);
+      updateAmount();
+      
+      document.getElementById('payment-modal').style.display = 'flex';
+    }
+    
+    // 关闭付款弹窗
+    function closePaymentModal() {
+      document.getElementById('payment-modal').style.display = 'none';
+    }
+    
+    // 设置倍数
+    function setMultiplier(n) {
+      currentMultiplier = n;
+      document.querySelectorAll('.multiplier-btn').forEach(btn => {
+        const val = parseInt(btn.dataset.value);
+        if (val === n) {
+          btn.style.background = 'var(--primary-red)';
+          btn.style.color = 'white';
+          btn.style.borderColor = 'var(--primary-red)';
+        } else {
+          btn.style.background = 'white';
+          btn.style.color = 'var(--gray-700)';
+          btn.style.borderColor = 'var(--gray-300)';
+        }
+      });
+      updateAmount();
+    }
+    
+    // 更新金额
+    function updateAmount() {
+      const baseAmount = 2 * selectedMatches.length;
+      const total = baseAmount * currentMultiplier;
+      
+      currentOrder.multiplier = currentMultiplier;
+      currentOrder.amount = total;
+      
+      document.getElementById('modal-amount').textContent = total;
+      document.getElementById('modal-detail').textContent = `${selectedMatches.length}注 × ${currentMultiplier}倍 = ${total}元`;
+    }
+    
+    // 确认支付 - 仅保存方案，不支付
+    function confirmPayment() {
+      console.log('确认支付 clicked', currentOrder);
+      if (!currentOrder) {
+        showToast('订单信息错误');
+        return;
+      }
+      
+      // 使用 schemeManager 保存，与我的页面统一
+      const scheme = {
+        type: 'football',
+        name: '竞彩足球',
+        description: selectedMatches.map(m => `${m.matchName} ${m.type}@${m.odds}`).join(', '),
+        issue: currentOrder.issue,
+        multiplier: currentMultiplier,
+        amount: currentOrder.amount,
+        matches: [...selectedMatches],
+        status: 'unpaid'  // 未支付状态
+      };
+      
+      if (typeof schemeManager !== 'undefined') {
+        schemeManager.add(scheme);
+        console.log('方案已保存到 schemeManager');
+      } else {
+        // 备用保存方式
+        saveOrder(scheme);
+      }
+      
+      closePaymentModal();
+      showToast('方案已保存，请前往我的方案付款');
+      
+      // 重置选择
+      selectedMatches = [];
+      document.querySelectorAll('.match-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+      });
+      updateSelectedCount();
+      
+      setTimeout(() => {
+        window.location.href = 'profile.html?v=2';
+      }, 1000);
+    }
+    
+    // 获取当前期号
+    function getCurrentIssue() {
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(-2);
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const issue = (day * 3 + Math.floor(now.getHours() / 8)).toString().padStart(3, '0');
+      return year + issue;
+    }
+    
+    // 备用保存订单
+    function saveOrder(order) {
+      try {
+        let orders = JSON.parse(localStorage.getItem('schemes') || '[]');
+        order.id = Date.now().toString();
+        order.createdAt = new Date().toISOString();
+        orders.unshift(order);
+        localStorage.setItem('schemes', JSON.stringify(orders));
+        console.log('订单保存成功:', order);
+      } catch (e) {
+        console.error('保存订单失败:', e);
+        showToast('保存失败，请重试');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>排列三 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <a href="../index.html" class="header-back">‹</a>
+    <div class="header-logo-center">
+      <div class="logo-icon-small">
+        <svg viewBox="0 0 40 40" width="24" height="24">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">排列三</span>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 玩法说明 -->
+    <div class="card">
+      <div class="card-title">玩法说明</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <span class="tag tag-red">直选</span>
+        <span class="tag tag-blue">组选三</span>
+        <span class="tag tag-green">组选六</span>
+      </div>
+      <p style="color: var(--gray-600); font-size: 13px; margin-top: 12px;">
+        从<b style="color: var(--primary-red);">0-9</b>中选<b style="color: var(--primary-red);">3个</b>号码
+      </p>
+    </div>
+
+    <!-- 玩法选择 -->
+    <div class="card">
+      <div class="card-title">选择玩法</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="play-type btn btn-primary" data-type="zhixuan" style="flex: 1; padding: 10px;">直选</button>
+        <button class="play-type btn btn-outline" data-type="zu3" style="flex: 1; padding: 10px;">组选三</button>
+        <button class="play-type btn btn-outline" data-type="zu6" style="flex: 1; padding: 10px;">组选六</button>
+      </div>
+    </div>
+
+    <!-- 选号区域 -->
+    <div class="card">
+      <div class="card-title">选号 <span style="font-size: 12px; color: var(--gray-500); font-weight: normal;">(选3个)</span></div>
+      <div id="number-area" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+        <!-- 0-9 -->
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div style="padding: 0 16px 20px;">
+      <button class="btn btn-secondary" style="width: 100%; margin-bottom: 12px;" onclick="generatePaiLie3()">
+        🎲 机选一注
+      </button>
+      <button class="btn btn-primary" style="width: 100%;" onclick="addToScheme()">
+        添加到方案
+      </button>
+    </div>
+
+    <!-- 当前选择 -->
+    <div class="card">
+      <div class="card-title">当前选择</div>
+      <div id="current-selection" style="text-align: center; padding: 20px;">
+        <p style="color: var(--gray-400);">请选择号码或机选</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="football.html" class="nav-item">
+      <span class="nav-icon">⚽</span>
+      <span>足球</span>
+    </a>
+    <a href="basketball.html" class="nav-item">
+      <span class="nav-icon">🏀</span>
+      <span>篮球</span>
+    </a>
+    <a href="kefu.html" class="nav-item">
+      <span class="nav-icon">💬</span>
+      <span>客服</span>
+    </a>
+  </nav>
+
+  <div id="toast" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 9999;"></div>
+
+  <!-- 付款确认弹窗 -->
+  <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: flex-end;">
+    <div style="background: white; width: 100%; max-height: 80%; border-radius: 16px 16px 0 0; padding: 20px; animation: slideUp 0.3s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 600;">确认投注</h3>
+        <button onclick="closePaymentModal()" style="background: none; border: none; font-size: 24px; color: var(--gray-500);">×</button>
+      </div>
+      
+      <!-- 期号信息 -->
+      <div style="background: var(--gray-50); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+          <span style="color: var(--gray-600);">期号：<span id="modal-issue" style="font-weight: 600;">-</span></span>
+          <span style="color: var(--primary-red);">截止：<span id="modal-deadline">20:00</span></span>
+        </div>
+      </div>
+      
+      <!-- 投注号码 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 8px;">投注号码 <span id="modal-play-type" style="color: var(--primary-blue);">(直选)</span></div>
+        <div id="modal-numbers" style="font-size: 20px; font-weight: 600; letter-spacing: 4px; color: var(--primary-blue);">-</div>
+      </div>
+      
+      <!-- 倍数选择 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 10px;">投注倍数</div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="multiplier-btn active" data-value="1" onclick="setMultiplier(1)" style="width: 48px; height: 36px; border: 2px solid var(--primary-red); background: var(--primary-red); color: white; border-radius: 6px; font-weight: 600;">1倍</button>
+          <button class="multiplier-btn" data-value="5" onclick="setMultiplier(5)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">5倍</button>
+          <button class="multiplier-btn" data-value="10" onclick="setMultiplier(10)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">10倍</button>
+          <button class="multiplier-btn" data-value="50" onclick="setMultiplier(50)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">50倍</button>
+          <button class="multiplier-btn" data-value="100" onclick="setMultiplier(100)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">100倍</button>
+        </div>
+      </div>
+      
+      <!-- 金额汇总 -->
+      <div style="background: #fff3e0; padding: 16px; border-radius: 8px; margin: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 14px; color: var(--gray-600);">应付金额</span>
+          <span style="font-size: 24px; font-weight: 700; color: var(--primary-red);">¥<span id="modal-amount">2</span></span>
+        </div>
+        <div style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">
+          <span id="modal-detail">1注 × 1倍 = 2元</span>
+        </div>
+      </div>
+      
+      <!-- 支付按钮 -->
+      <button onclick="confirmPayment()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-red), #ff4757); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600;">
+        确认支付
+      </button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
+
+  <script src="../js/app.js"></script>
+  <script>
+    let selectedNumbers = [];
+    let playType = 'zhixuan';
+
+    // 初始化号码
+    function initNumbers() {
+      const area = document.getElementById('number-area');
+      for (let i = 0; i <= 9; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'number-btn';
+        btn.textContent = i;
+        btn.style.cssText = `
+          width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--gray-300);
+          background: var(--white); font-size: 18px; cursor: pointer; transition: all 0.2s;
+          margin: 0 auto;
+        `;
+        btn.onclick = () => toggleNumber(i, btn);
+        area.appendChild(btn);
+      }
+    }
+
+    // 切换选择
+    function toggleNumber(num, btn) {
+      const index = selectedNumbers.indexOf(num);
+      const maxCount = playType === 'zu3' ? 2 : 3;
+      
+      if (index > -1) {
+        selectedNumbers.splice(index, 1);
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      } else if (selectedNumbers.length < maxCount) {
+        selectedNumbers.push(num);
+        btn.style.background = 'var(--primary-blue)';
+        btn.style.color = 'var(--white)';
+        btn.style.borderColor = 'var(--primary-blue)';
+      } else {
+        showToast(`该玩法最多选${maxCount}个不同号码`);
+      }
+      updateDisplay();
+    }
+
+    // 更新显示
+    function updateDisplay() {
+      const display = document.getElementById('current-selection');
+      if (selectedNumbers.length === 0) {
+        display.innerHTML = '<p style="color: var(--gray-400);">请选择号码或机选</p>';
+        return;
+      }
+      
+      let html = '<div>';
+      html += `<span style="color: var(--gray-500); font-size: 12px;">玩法: ${getPlayTypeName()} | </span>`;
+      selectedNumbers.forEach(num => {
+        html += `<span style="display: inline-block; width: 36px; height: 36px; line-height: 36px; background: var(--primary-blue); color: white; border-radius: 50%; font-size: 16px; margin: 4px;">${num}</span>`;
+      });
+      html += '</div>';
+      display.innerHTML = html;
+    }
+
+    // 获取玩法名称
+    function getPlayTypeName() {
+      const names = { zhixuan: '直选', zu3: '组选三', zu6: '组选六' };
+      return names[playType] || '直选';
+    }
+
+    // 机选
+    function generatePaiLie3() {
+      selectedNumbers = [];
+      document.querySelectorAll('.number-btn').forEach(btn => {
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      });
+      
+      const count = playType === 'zu3' ? 2 : 3;
+      const set = new Set();
+      while (set.size < count) {
+        set.add(Math.floor(Math.random() * 10));
+      }
+      selectedNumbers = Array.from(set);
+      
+      document.querySelectorAll('.number-btn').forEach(btn => {
+        if (selectedNumbers.includes(parseInt(btn.textContent))) {
+          btn.style.background = 'var(--primary-blue)';
+          btn.style.color = 'var(--white)';
+          btn.style.borderColor = 'var(--primary-blue)';
+        }
+      });
+      
+      updateDisplay();
+    }
+
+    let currentMultiplier = 1;
+    let currentOrder = null;
+
+    // 添加到方案 - 显示付款弹窗
+    function addToScheme() {
+      const minCount = playType === 'zu3' ? 2 : 3;
+      if (selectedNumbers.length < minCount) {
+        showToast(`请选${minCount}个号码`);
+        return;
+      }
+      
+      // 获取当前期号
+      const issue = getCurrentIssue();
+      
+      // 保存当前订单数据
+      currentOrder = {
+        type: 'pailie3',
+        name: '排列三',
+        playType: playType,
+        numbers: [...selectedNumbers],
+        issue: issue,
+        multiplier: 1,
+        amount: 2,
+        status: 'pending',
+        winAmount: 0,
+        createTime: new Date().toISOString(),
+        description: `${getPlayTypeName()}: ${selectedNumbers.join(' ')}`
+      };
+      
+      // 显示付款弹窗
+      showPaymentModal();
+    }
+    
+    // 显示付款弹窗
+    function showPaymentModal() {
+      document.getElementById('modal-issue').textContent = currentOrder.issue + '期';
+      document.getElementById('modal-play-type').textContent = '(' + getPlayTypeName() + ')';
+      document.getElementById('modal-numbers').textContent = currentOrder.numbers.join(' ');
+      
+      currentMultiplier = 1;
+      setMultiplier(1);
+      updateAmount();
+      
+      document.getElementById('payment-modal').style.display = 'flex';
+    }
+    
+    // 关闭付款弹窗
+    function closePaymentModal() {
+      document.getElementById('payment-modal').style.display = 'none';
+    }
+    
+    // 设置倍数
+    function setMultiplier(n) {
+      currentMultiplier = n;
+      document.querySelectorAll('.multiplier-btn').forEach(btn => {
+        const val = parseInt(btn.dataset.value);
+        if (val === n) {
+          btn.style.background = 'var(--primary-red)';
+          btn.style.color = 'white';
+          btn.style.borderColor = 'var(--primary-red)';
+        } else {
+          btn.style.background = 'white';
+          btn.style.color = 'var(--gray-700)';
+          btn.style.borderColor = 'var(--gray-300)';
+        }
+      });
+      updateAmount();
+    }
+    
+    // 更新金额
+    function updateAmount() {
+      const total = 2 * currentMultiplier;
+      
+      currentOrder.multiplier = currentMultiplier;
+      currentOrder.amount = total;
+      
+      document.getElementById('modal-amount').textContent = total;
+      document.getElementById('modal-detail').textContent = `1注 × ${currentMultiplier}倍 = ${total}元`;
+    }
+    
+    // 确认支付 - 仅保存方案，不支付
+    function confirmPayment() {
+      console.log('确认支付 clicked', currentOrder);
+      if (!currentOrder) {
+        showToast('订单信息错误');
+        return;
+      }
+      
+      // 使用 schemeManager 保存，与我的页面统一
+      const scheme = {
+        type: 'pailie3',
+        name: '排列三',
+        description: `${getPlayTypeName()}: ${selectedNumbers.join(' ')}`,
+        issue: currentOrder.issue,
+        multiplier: currentMultiplier,
+        amount: currentOrder.amount,
+        numbers: [...selectedNumbers],
+        playType: playType,
+        status: 'unpaid'  // 未支付状态
+      };
+      
+      if (typeof schemeManager !== 'undefined') {
+        schemeManager.add(scheme);
+        console.log('方案已保存到 schemeManager');
+      } else {
+        // 备用保存方式
+        saveOrder(scheme);
+      }
+      
+      closePaymentModal();
+      showToast('方案已保存，请前往我的方案付款');
+      
+      // 重置选择
+      selectedNumbers = [];
+      document.querySelectorAll('.number-btn').forEach(btn => {
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      });
+      updateDisplay();
+      
+      setTimeout(() => {
+        window.location.href = 'profile.html?v=2';
+      }, 1000);
+    }
+    
+    // 获取当前期号
+    function getCurrentIssue() {
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(-2);
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const issue = (day * 3 + Math.floor(now.getHours() / 8)).toString().padStart(3, '0');
+      return year + issue;
+    }
+    
+    // 备用保存订单
+    function saveOrder(order) {
+      try {
+        let orders = JSON.parse(localStorage.getItem('schemes') || '[]');
+        order.id = Date.now().toString();
+        order.createdAt = new Date().toISOString();
+        orders.unshift(order);
+        localStorage.setItem('schemes', JSON.stringify(orders));
+        console.log('订单保存成功:', order);
+      } catch (e) {
+        console.error('保存订单失败:', e);
+        showToast('保存失败，请重试');
+      }
+    }
+
+    // 玩法切换
+    document.querySelectorAll('.play-type').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.play-type').forEach(b => {
+          b.classList.remove('btn-primary');
+          b.classList.add('btn-outline');
+        });
+        this.classList.remove('btn-outline');
+        this.classList.add('btn-primary');
+        playType = this.dataset.type;
+        
+        // 重置选择
+        selectedNumbers = [];
+        document.querySelectorAll('.number-btn').forEach(btn => {
+          btn.style.background = 'var(--white)';
+          btn.style.color = 'var(--gray-800)';
+          btn.style.borderColor = 'var(--gray-300)';
+        });
+        updateDisplay();
+      });
+    });
+
+    // 初始化
+    initNumbers();
+  </script>
+</body>
+</html>

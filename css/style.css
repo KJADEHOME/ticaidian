@@ -1,0 +1,613 @@
+/* 竞彩门店通 - 官方稳重风样式 */
+
+/* CSS变量定义 */
+:root {
+  /* 体彩官方配色 */
+  --primary-red: #e60012;
+  --primary-blue: #005bac;
+  --secondary-blue: #0078d4;
+  --dark-blue: #003d7a;
+  --light-blue: #e6f2ff;
+  
+  /* 中性色 */
+  --white: #ffffff;
+  --gray-50: #f8f9fa;
+  --gray-100: #f1f3f4;
+  --gray-200: #e8eaed;
+  --gray-300: #dadce0;
+  --gray-400: #bdc1c6;
+  --gray-500: #9aa0a6;
+  --gray-600: #80868b;
+  --gray-700: #5f6368;
+  --gray-800: #3c4043;
+  --gray-900: #202124;
+  --black: #000000;
+  
+  /* 功能色 */
+  --success: #34a853;
+  --warning: #fbbc04;
+  --error: #ea4335;
+  
+  /* 字体 */
+  --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  
+  /* 尺寸 */
+  --header-height: 56px;
+  --bottom-nav-height: 64px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+/* 重置样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--gray-800);
+  background-color: var(--gray-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 顶部导航 */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: linear-gradient(135deg, var(--primary-red) 0%, #ff1a2e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  box-shadow: var(--shadow-md);
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: 1px;
+}
+
+/* 头部Logo样式 */
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.logo-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  letter-spacing: 1px;
+}
+
+.logo-subtitle {
+  font-size: 10px;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.2;
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+/* 带返回按钮的头部Logo样式 */
+.header-logo-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo-icon-small {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-back {
+  position: absolute;
+  left: 16px;
+  color: var(--white);
+  font-size: 20px;
+  text-decoration: none;
+  padding: 8px;
+}
+
+/* 主内容区 */
+.main-content {
+  padding-top: var(--header-height);
+  padding-bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+  min-height: 100vh;
+}
+
+/* 底部导航 */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--bottom-nav-height) + var(--safe-area-bottom));
+  background: var(--white);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 8px;
+  border-top: 1px solid var(--gray-200);
+  z-index: 1000;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--gray-500);
+  font-size: 11px;
+  padding: 4px 12px;
+  transition: color 0.2s;
+}
+
+.nav-item.active {
+  color: var(--primary-red);
+}
+
+.nav-icon {
+  font-size: 22px;
+  margin-bottom: 2px;
+}
+
+/* 卡片样式 */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  margin: 12px 16px;
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title::before {
+  content: '';
+  width: 4px;
+  height: 18px;
+  background: var(--primary-red);
+  border-radius: 2px;
+}
+
+/* 公益金横幅 */
+.welfare-banner {
+  background: linear-gradient(135deg, var(--primary-red) 0%, #ff4757 100%);
+  margin: 12px 16px;
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--white);
+  text-align: center;
+}
+
+.welfare-label {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.welfare-amount {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.welfare-slogan {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+/* 彩种网格 */
+.lottery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.lottery-item {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 16px 8px;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lottery-item:active {
+  transform: scale(0.98);
+}
+
+/* 今日开奖列表 */
+.lottery-list {
+  padding: 8px 0;
+}
+
+.lottery-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.lottery-item-row:last-child {
+  border-bottom: none;
+}
+
+.lottery-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lottery-tag {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.lottery-issue {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+.lottery-time {
+  font-size: 12px;
+  color: var(--gray-500);
+}
+
+/* 快捷功能 */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.quick-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--gray-700);
+  font-size: 12px;
+  gap: 8px;
+}
+
+.quick-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: white;
+}
+
+/* 公告列表 */
+.notice-list {
+  padding: 8px 0;
+}
+
+.notice-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  text-decoration: none;
+  color: var(--gray-700);
+  font-size: 13px;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.notice-item:last-child {
+  border-bottom: none;
+}
+
+.notice-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--primary-red);
+  border-radius: 50%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.notice-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 底部提示 */
+.footer-notice {
+  text-align: center;
+  padding: 24px 20px 100px;
+}
+
+.footer-notice p {
+  font-size: 12px;
+  color: var(--gray-400);
+  line-height: 1.8;
+}
+
+/* 卡片更多按钮 */
+.card-more {
+  font-size: 12px;
+  color: var(--gray-500);
+  font-weight: normal;
+  margin-left: auto;
+}
+
+/* Toast样式 */
+.toast {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 9999;
+}
+
+.lottery-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.lottery-item.football .lottery-icon {
+  background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+}
+
+.lottery-item.basketball .lottery-icon {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+}
+
+.lottery-item.daletou .lottery-icon {
+  background: linear-gradient(135deg, var(--primary-red) 0%, #c4001a 100%);
+}
+
+.lottery-item.pailie3 .lottery-icon {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
+}
+
+.lottery-item.renxuan9 .lottery-icon {
+  background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+}
+
+.lottery-item.pailie5 .lottery-icon {
+  background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
+}
+
+.lottery-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.lottery-desc {
+  font-size: 11px;
+  color: var(--gray-500);
+  margin-top: 4px;
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary-red);
+  color: var(--white);
+}
+
+.btn-primary:active {
+  background: #c4001a;
+}
+
+.btn-secondary {
+  background: var(--primary-blue);
+  color: var(--white);
+}
+
+.btn-secondary:active {
+  background: var(--dark-blue);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary-red);
+  border: 1px solid var(--primary-red);
+}
+
+/* 列表样式 */
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-100);
+  text-decoration: none;
+  color: var(--gray-800);
+}
+
+.list-item:last-child {
+  border-bottom: none;
+}
+
+.list-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-size: 20px;
+}
+
+.list-content {
+  flex: 1;
+}
+
+.list-title {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.list-desc {
+  font-size: 12px;
+  color: var(--gray-500);
+  margin-top: 2px;
+}
+
+.list-arrow {
+  color: var(--gray-400);
+  font-size: 18px;
+}
+
+/* 标签样式 */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.tag-red {
+  background: rgba(230, 0, 18, 0.1);
+  color: var(--primary-red);
+}
+
+.tag-blue {
+  background: rgba(0, 91, 172, 0.1);
+  color: var(--primary-blue);
+}
+
+.tag-green {
+  background: rgba(52, 168, 83, 0.1);
+  color: var(--success);
+}
+
+.tag-orange {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: var(--gray-500);
+}
+
+/* 响应式适配 */
+@media (min-width: 768px) {
+  .lottery-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 600px;
+    margin: 16px auto;
+  }
+  
+  .card {
+    max-width: 600px;
+    margin: 12px auto;
+  }
+}
+
+/* 安全区域适配 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .main-content {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  }
+}

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>在线客服 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - var(--header-height) - var(--bottom-nav-height) - var(--safe-area-bottom));
+      background: var(--gray-100);
+    }
+    
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    
+    .message {
+      display: flex;
+      margin-bottom: 16px;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .message.user {
+      flex-direction: row-reverse;
+    }
+    
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    
+    .message.user .message-avatar {
+      background: var(--primary-blue);
+      margin-left: 12px;
+    }
+    
+    .message.service .message-avatar {
+      background: var(--primary-red);
+      margin-right: 12px;
+    }
+    
+    .message-content {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    
+    .message.user .message-content {
+      background: var(--primary-blue);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+    
+    .message.service .message-content {
+      background: white;
+      color: var(--gray-800);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .message-time {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin-top: 4px;
+      text-align: right;
+    }
+    
+    .quick-replies {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      background: white;
+      border-top: 1px solid var(--gray-200);
+    }
+    
+    .quick-reply {
+      padding: 8px 16px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-300);
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .quick-reply:hover {
+      background: var(--primary-red);
+      color: white;
+      border-color: var(--primary-red);
+    }
+    
+    .chat-input-area {
+      background: white;
+      border-top: 1px solid var(--gray-200);
+      padding: 12px 16px calc(12px + var(--safe-area-bottom));
+    }
+    
+    .chat-input-wrapper {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    .chat-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--gray-300);
+      border-radius: 24px;
+      font-size: 14px;
+      outline: none;
+    }
+    
+    .chat-input:focus {
+      border-color: var(--primary-red);
+    }
+    
+    .send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-red);
+      color: white;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .send-btn:disabled {
+      background: var(--gray-300);
+    }
+    
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 16px;
+    }
+    
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--gray-400);
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+    
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <a href="../index.html" class="header-back">‹</a>
+    <div class="header-logo-center">
+      <div class="logo-icon-small">
+        <svg viewBox="0 0 40 40" width="24" height="24">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">在线客服</span>
+    </div>
+    <div style="position: absolute; right: 16px; display: flex; align-items: center; gap: 6px;">
+      <span style="width: 8px; height: 8px; background: #52c41a; border-radius: 50%;"></span>
+      <span style="font-size: 12px; color: #52c41a;">在线</span>
+    </div>
+  </header>
+
+  <!-- 聊天区域 -->
+  <div class="chat-container">
+    <div class="chat-messages" id="chat-messages">
+      <!-- 欢迎消息 -->
+      <div class="message service">
+        <div class="message-avatar">👩‍💼</div>
+        <div>
+          <div class="message-content">
+            您好！欢迎来到竞彩门店通，我是您的专属客服小助手，请问有什么可以帮助您的？
+          </div>
+          <div class="message-time">刚刚</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 快捷回复 -->
+    <div class="quick-replies">
+      <span class="quick-reply" onclick="sendQuickReply('如何兑奖？')">如何兑奖？</span>
+      <span class="quick-reply" onclick="sendQuickReply('开奖时间')">开奖时间</span>
+      <span class="quick-reply" onclick="sendQuickReply('投注规则')">投注规则</span>
+      <span class="quick-reply" onclick="sendQuickReply('联系门店')">联系门店</span>
+    </div>
+    
+    <!-- 输入区域 -->
+    <div class="chat-input-area">
+      <div class="chat-input-wrapper">
+        <input type="text" class="chat-input" id="chat-input" placeholder="请输入您的问题..." onkeypress="handleKeyPress(event)">
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="football.html" class="nav-item">
+      <span class="nav-icon">⚽</span>
+      <span>足球</span>
+    </a>
+    <a href="basketball.html" class="nav-item">
+      <span class="nav-icon">🏀</span>
+      <span>篮球</span>
+    </a>
+    <a href="kefu.html" class="nav-item active">
+      <span class="nav-icon">💬</span>
+      <span>客服</span>
+    </a>
+  </nav>
+
+  <script src="../js/app.js"></script>
+  <script>
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    
+    // 客服回复库
+    const replies = {
+      '如何兑奖': '中奖后请携带中奖彩票到附近体彩门店兑奖。单注奖金1万元以下可在门店直接兑付，1万元以上需到市中心兑付。',
+      '开奖时间': '大乐透：每周一、三、六 20:30开奖\n排列三/五：每天 20:30开奖\n竞彩足球/篮球：比赛结束后即时开奖',
+      '投注规则': '大乐透：前区选5个(1-35)，后区选2个(1-12)\n排列三：选3个号码(0-9)\n排列五：选5个号码(0-9)\n竞彩：选择比赛结果进行投注',
+      '联系门店': '您可以在"我的位置"页面查看附近的体彩门店，或拨打客服热线：400-XXX-XXXX',
+      '默认': '感谢您的咨询，客服人员会尽快为您解答。您也可以拨打客服热线：400-XXX-XXXX'
+    };
+    
+    // 发送消息
+    function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      
+      // 添加用户消息
+      addMessage(text, 'user');
+      chatInput.value = '';
+      
+      // 显示输入中
+      showTyping();
+      
+      // 模拟客服回复
+      setTimeout(() => {
+        hideTyping();
+        const reply = getReply(text);
+        addMessage(reply, 'service');
+      }, 1000 + Math.random() * 1000);
+    }
+    
+    // 添加快捷回复
+    function sendQuickReply(text) {
+      chatInput.value = text;
+      sendMessage();
+    }
+    
+    // 添加消息到界面
+    function addMessage(text, type) {
+      const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      const avatar = type === 'user' ? '👤' : '👩‍💼';
+      
+      const html = `
+        <div class="message ${type}">
+          ${type === 'service' ? `<div class="message-avatar">${avatar}</div>` : ''}
+          <div>
+            <div class="message-content">${text}</div>
+            <div class="message-time">${time}</div>
+          </div>
+          ${type === 'user' ? `<div class="message-avatar">${avatar}</div>` : ''}
+        </div>
+      `;
+      
+      chatMessages.insertAdjacentHTML('beforeend', html);
+      scrollToBottom();
+    }
+    
+    // 显示输入中
+    function showTyping() {
+      const html = `
+        <div class="message service typing" id="typing-indicator">
+          <div class="message-avatar">👩‍💼</div>
+          <div class="message-content">
+            <div class="typing-indicator">
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+            </div>
+          </div>
+        </div>
+      `;
+      chatMessages.insertAdjacentHTML('beforeend', html);
+      scrollToBottom();
+    }
+    
+    // 隐藏输入中
+    function hideTyping() {
+      const typing = document.getElementById('typing-indicator');
+      if (typing) typing.remove();
+    }
+    
+    // 滚动到底部
+    function scrollToBottom() {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // 获取回复
+    function getReply(text) {
+      for (let key in replies) {
+        if (text.includes(key.replace('如何', '').replace('？', ''))) {
+          return replies[key];
+        }
+      }
+      return replies['默认'];
+    }
+    
+    // 键盘事件
+    function handleKeyPress(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    }
+    
+    // 初始化滚动到底部
+    scrollToBottom();
+  </script>
+</body>
+</html>

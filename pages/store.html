@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>门店服务 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" width="28" height="28">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">门店服务</span>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 扫码入口 -->
+    <div class="scan-section">
+      <div class="scan-card" onclick="showToast('扫码功能开发中')">
+        <div class="scan-icon">📷</div>
+        <div class="scan-text">扫码核销</div>
+        <div class="scan-desc">扫描门店二维码核销方案</div>
+      </div>
+    </div>
+
+    <!-- 我的位置 -->
+    <div class="card">
+      <div class="card-title">
+        我的位置
+        <span class="card-more" onclick="showToast('查看地图')">地图 ›</span>
+      </div>
+      
+      <div class="store-list">
+        <div class="store-item">
+          <div class="store-header">
+            <span class="store-name">体彩旗舰店</span>
+            <span class="store-distance">0.5km</span>
+          </div>
+          <div class="store-address">📍 上海市浦东新区世纪大道100号</div>
+          <div class="store-tags">
+            <span class="store-tag">竞彩</span>
+            <span class="store-tag">大乐透</span>
+            <span class="store-tag">即开票</span>
+          </div>
+          <div class="store-actions">
+            <button class="btn btn-outline" style="padding: 6px 16px; font-size: 12px;" onclick="showToast('导航功能开发中')">导航</button>
+            <button class="btn btn-primary" style="padding: 6px 16px; font-size: 12px;" onclick="showToast('电话功能开发中')">电话</button>
+          </div>
+        </div>
+
+        <div class="store-item">
+          <div class="store-header">
+            <span class="store-name">体彩专营店</span>
+            <span class="store-distance">1.2km</span>
+          </div>
+          <div class="store-address">📍 上海市浦东新区陆家嘴环路200号</div>
+          <div class="store-tags">
+            <span class="store-tag">竞彩</span>
+            <span class="store-tag">数字彩</span>
+          </div>
+          <div class="store-actions">
+            <button class="btn btn-outline" style="padding: 6px 16px; font-size: 12px;" onclick="showToast('导航功能开发中')">导航</button>
+            <button class="btn btn-primary" style="padding: 6px 16px; font-size: 12px;" onclick="showToast('电话功能开发中')">电话</button>
+          </div>
+        </div>
+
+        <div class="store-item">
+          <div class="store-header">
+            <span class="store-name">便利体彩点</span>
+            <span class="store-distance">2.0km</span>
+          </div>
+          <div class="store-address">📍 上海市浦东新区张杨路500号</div>
+          <div class="store-tags">
+            <span class="store-tag">数字彩</span>
+            <span class="store-tag">即开票</span>
+          </div>
+          <div class="store-actions">
+            <button class="btn btn-outline" style="padding: 6px 16px; font-size: 12px;" onclick="showToast('导航功能开发中')">导航</button>
+            <button class="btn btn-primary" style="padding: 6px 16px; font-size: 12px;" onclick="showToast('电话功能开发中')">电话</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 门店搜索 -->
+    <div class="card">
+      <div class="card-title">搜索门店</div>
+      <div class="store-search">
+        <input type="text" placeholder="输入门店名称或地址" class="search-input">
+        <button class="btn btn-primary" style="padding: 10px 20px;">搜索</button>
+      </div>
+    </div>
+
+    <!-- 门店服务说明 -->
+    <div class="card">
+      <div class="card-title">服务说明</div>
+      <div class="service-list">
+        <div class="service-item">
+          <span class="service-icon">✓</span>
+          <span class="service-text">所有门店均为中国体育彩票官方授权网点</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">✓</span>
+          <span class="service-text">支持竞彩、大乐透、排列三/五等全彩种</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">✓</span>
+          <span class="service-text">营业时间以各门店实际为准</span>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">✓</span>
+          <span class="service-text">大额兑奖请前往体彩中心办理</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="match.html" class="nav-item">
+      <span class="nav-icon">⚽</span>
+      <span>赛事</span>
+    </a>
+    <a href="data.html" class="nav-item">
+      <span class="nav-icon">📊</span>
+      <span>数据</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>我的</span>
+    </a>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="../js/app.js"></script>
+  
+  <style>
+    .scan-section {
+      padding: 16px;
+    }
+    
+    .scan-card {
+      background: linear-gradient(135deg, var(--primary-red) 0%, #ff4757 100%);
+      border-radius: 16px;
+      padding: 32px;
+      text-align: center;
+      color: var(--white);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .scan-card:active {
+      transform: scale(0.98);
+    }
+    
+    .scan-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    
+    .scan-text {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .scan-desc {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    
+    .store-list {
+      padding: 8px 0;
+    }
+    
+    .store-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    
+    .store-item:last-child {
+      border-bottom: none;
+    }
+    
+    .store-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .store-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    .store-distance {
+      font-size: 13px;
+      color: var(--primary-red);
+      font-weight: 500;
+    }
+    
+    .store-address {
+      font-size: 13px;
+      color: var(--gray-600);
+      margin-bottom: 10px;
+    }
+    
+    .store-tags {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .store-tag {
+      padding: 3px 10px;
+      background: var(--light-blue);
+      color: var(--primary-blue);
+      border-radius: 4px;
+      font-size: 11px;
+    }
+    
+    .store-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .store-search {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-red);
+    }
+    
+    .service-list {
+      padding: 8px 0;
+    }
+    
+    .service-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+    
+    .service-icon {
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      background: var(--success);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 12px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>大乐透 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <a href="../index.html" class="header-back">‹</a>
+    <div class="header-logo-center">
+      <div class="logo-icon-small">
+        <svg viewBox="0 0 40 40" width="24" height="24">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">大乐透</span>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 玩法说明 -->
+    <div class="card">
+      <div class="card-title">玩法说明</div>
+      <p style="color: var(--gray-600); font-size: 13px; line-height: 1.6;">
+        从<b style="color: var(--primary-red);">01-35</b>中选<b style="color: var(--primary-red);">5个</b>前区号码，<br>
+        从<b style="color: var(--primary-blue);">01-12</b>中选<b style="color: var(--primary-blue);">2个</b>后区号码
+      </p>
+    </div>
+
+    <!-- 选号区域 -->
+    <div class="card">
+      <div class="card-title">前区号码 <span style="font-size: 12px; color: var(--gray-500); font-weight: normal;">(选5个)</span></div>
+      <div id="front-area" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+        <!-- 01-35 -->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">后区号码 <span style="font-size: 12px; color: var(--gray-500); font-weight: normal;">(选2个)</span></div>
+      <div id="back-area" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;">
+        <!-- 01-12 -->
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div style="padding: 0 16px 20px;">
+      <button class="btn btn-secondary" style="width: 100%; margin-bottom: 12px;" onclick="generateDaLeTou()">
+        🎲 机选一注
+      </button>
+      <button class="btn btn-primary" style="width: 100%;" onclick="addToScheme()">
+        添加到方案
+      </button>
+    </div>
+
+    <!-- 当前选择 -->
+    <div class="card">
+      <div class="card-title">当前选择</div>
+      <div id="current-selection" style="text-align: center; padding: 20px;">
+        <p style="color: var(--gray-400);">请选择号码或机选</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="football.html" class="nav-item">
+      <span class="nav-icon">⚽</span>
+      <span>足球</span>
+    </a>
+    <a href="basketball.html" class="nav-item">
+      <span class="nav-icon">🏀</span>
+      <span>篮球</span>
+    </a>
+    <a href="kefu.html" class="nav-item">
+      <span class="nav-icon">💬</span>
+      <span>客服</span>
+    </a>
+  </nav>
+
+  <div id="toast" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 9999;"></div>
+
+  <!-- 付款确认弹窗 -->
+  <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: flex-end;">
+    <div style="background: white; width: 100%; max-height: 80%; border-radius: 16px 16px 0 0; padding: 20px; animation: slideUp 0.3s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 600;">确认投注</h3>
+        <button onclick="closePaymentModal()" style="background: none; border: none; font-size: 24px; color: var(--gray-500);">×</button>
+      </div>
+      
+      <!-- 期号信息 -->
+      <div style="background: var(--gray-50); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+          <span style="color: var(--gray-600);">期号：<span id="modal-issue" style="font-weight: 600;">-</span></span>
+          <span style="color: var(--primary-red);">截止：<span id="modal-deadline">20:00</span></span>
+        </div>
+      </div>
+      
+      <!-- 投注号码 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 8px;">投注号码</div>
+        <div id="modal-numbers" style="font-size: 16px; font-weight: 600; letter-spacing: 2px;">
+          <span style="color: var(--primary-red);">-</span> + <span style="color: var(--primary-blue);">-</span>
+        </div>
+      </div>
+      
+      <!-- 倍数选择 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 10px;">投注倍数</div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="multiplier-btn active" data-value="1" onclick="setMultiplier(1)" style="width: 48px; height: 36px; border: 2px solid var(--primary-red); background: var(--primary-red); color: white; border-radius: 6px; font-weight: 600;">1倍</button>
+          <button class="multiplier-btn" data-value="5" onclick="setMultiplier(5)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">5倍</button>
+          <button class="multiplier-btn" data-value="10" onclick="setMultiplier(10)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">10倍</button>
+          <button class="multiplier-btn" data-value="50" onclick="setMultiplier(50)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">50倍</button>
+          <button class="multiplier-btn" data-value="100" onclick="setMultiplier(100)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">100倍</button>
+        </div>
+      </div>
+      
+      <!-- 追加选项 -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--gray-100);">
+        <div>
+          <div style="font-size: 14px; font-weight: 500;">追加投注</div>
+          <div style="font-size: 12px; color: var(--gray-500);">一等奖追加奖金多80%</div>
+        </div>
+        <label style="position: relative; display: inline-block; width: 48px; height: 26px;">
+          <input type="checkbox" id="append-toggle" onchange="updateAmount()" style="opacity: 0; width: 0; height: 0;">
+          <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: var(--gray-300); border-radius: 26px; transition: 0.3s;"></span>
+          <span style="position: absolute; content: ''; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s;"></span>
+        </label>
+      </div>
+      
+      <!-- 金额汇总 -->
+      <div style="background: #fff3e0; padding: 16px; border-radius: 8px; margin: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 14px; color: var(--gray-600);">应付金额</span>
+          <span style="font-size: 24px; font-weight: 700; color: var(--primary-red);">¥<span id="modal-amount">2</span></span>
+        </div>
+        <div style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">
+          <span id="modal-detail">1注 × 1倍 = 2元</span>
+        </div>
+      </div>
+      
+      <!-- 支付按钮 -->
+      <button onclick="confirmPayment()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-red), #ff4757); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600;">
+        确认支付
+      </button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    #payment-modal label input:checked + span { background: var(--primary-red) !important; }
+    #payment-modal label input:checked + span + span { transform: translateX(22px); }
+  </style>
+
+  <script src="../js/app.js"></script>
+  <script>
+    let selectedFront = [];
+    let selectedBack = [];
+
+    // 初始化号码区域
+    function initNumbers() {
+      const frontArea = document.getElementById('front-area');
+      const backArea = document.getElementById('back-area');
+      
+      // 前区 01-35
+      for (let i = 1; i <= 35; i++) {
+        const num = i.toString().padStart(2, '0');
+        const btn = document.createElement('button');
+        btn.className = 'number-btn front';
+        btn.textContent = num;
+        btn.style.cssText = `
+          width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--gray-300);
+          background: var(--white); font-size: 13px; cursor: pointer; transition: all 0.2s;
+        `;
+        btn.onclick = () => toggleFront(num, btn);
+        frontArea.appendChild(btn);
+      }
+      
+      // 后区 01-12
+      for (let i = 1; i <= 12; i++) {
+        const num = i.toString().padStart(2, '0');
+        const btn = document.createElement('button');
+        btn.className = 'number-btn back';
+        btn.textContent = num;
+        btn.style.cssText = `
+          width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--gray-300);
+          background: var(--white); font-size: 14px; cursor: pointer; transition: all 0.2s;
+        `;
+        btn.onclick = () => toggleBack(num, btn);
+        backArea.appendChild(btn);
+      }
+    }
+
+    // 切换前区选择
+    function toggleFront(num, btn) {
+      const index = selectedFront.indexOf(num);
+      if (index > -1) {
+        selectedFront.splice(index, 1);
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      } else if (selectedFront.length < 5) {
+        selectedFront.push(num);
+        selectedFront.sort();
+        btn.style.background = 'var(--primary-red)';
+        btn.style.color = 'var(--white)';
+        btn.style.borderColor = 'var(--primary-red)';
+      } else {
+        showToast('前区最多选5个');
+      }
+      updateDisplay();
+    }
+
+    // 切换后区选择
+    function toggleBack(num, btn) {
+      const index = selectedBack.indexOf(num);
+      if (index > -1) {
+        selectedBack.splice(index, 1);
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      } else if (selectedBack.length < 2) {
+        selectedBack.push(num);
+        selectedBack.sort();
+        btn.style.background = 'var(--primary-blue)';
+        btn.style.color = 'var(--white)';
+        btn.style.borderColor = 'var(--primary-blue)';
+      } else {
+        showToast('后区最多选2个');
+      }
+      updateDisplay();
+    }
+
+    // 更新显示
+    function updateDisplay() {
+      const display = document.getElementById('current-selection');
+      if (selectedFront.length === 0 && selectedBack.length === 0) {
+        display.innerHTML = '<p style="color: var(--gray-400);">请选择号码或机选</p>';
+        return;
+      }
+      
+      let html = '<div style="margin-bottom: 12px;">';
+      html += '<span style="color: var(--gray-500); font-size: 12px;">前区: </span>';
+      selectedFront.forEach(num => {
+        html += `<span style="display: inline-block; width: 28px; height: 28px; line-height: 28px; background: var(--primary-red); color: white; border-radius: 50%; font-size: 12px; margin: 2px;">${num}</span>`;
+      });
+      html += '</div><div>';
+      html += '<span style="color: var(--gray-500); font-size: 12px;">后区: </span>';
+      selectedBack.forEach(num => {
+        html += `<span style="display: inline-block; width: 28px; height: 28px; line-height: 28px; background: var(--primary-blue); color: white; border-radius: 50%; font-size: 12px; margin: 2px;">${num}</span>`;
+      });
+      html += '</div>';
+      display.innerHTML = html;
+    }
+
+    // 机选
+    function generateDaLeTou() {
+      // 重置
+      selectedFront = [];
+      selectedBack = [];
+      document.querySelectorAll('.number-btn').forEach(btn => {
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      });
+      
+      // 生成前区
+      const frontSet = new Set();
+      while (frontSet.size < 5) {
+        frontSet.add(Math.floor(Math.random() * 35) + 1);
+      }
+      selectedFront = Array.from(frontSet).map(n => n.toString().padStart(2, '0')).sort();
+      
+      // 生成后区
+      const backSet = new Set();
+      while (backSet.size < 2) {
+        backSet.add(Math.floor(Math.random() * 12) + 1);
+      }
+      selectedBack = Array.from(backSet).map(n => n.toString().padStart(2, '0')).sort();
+      
+      // 更新按钮状态
+      document.querySelectorAll('.number-btn.front').forEach(btn => {
+        if (selectedFront.includes(btn.textContent)) {
+          btn.style.background = 'var(--primary-red)';
+          btn.style.color = 'var(--white)';
+          btn.style.borderColor = 'var(--primary-red)';
+        }
+      });
+      document.querySelectorAll('.number-btn.back').forEach(btn => {
+        if (selectedBack.includes(btn.textContent)) {
+          btn.style.background = 'var(--primary-blue)';
+          btn.style.color = 'var(--white)';
+          btn.style.borderColor = 'var(--primary-blue)';
+        }
+      });
+      
+      updateDisplay();
+    }
+
+    let currentMultiplier = 1;
+    let currentOrder = null;
+
+    // 添加到方案 - 显示付款弹窗
+    function addToScheme() {
+      if (selectedFront.length !== 5 || selectedBack.length !== 2) {
+        showToast('前区选5个，后区选2个');
+        return;
+      }
+      
+      // 获取当前期号
+      const issue = getCurrentIssue();
+      
+      // 保存当前订单数据
+      currentOrder = {
+        type: 'daletou',
+        name: '大乐透',
+        front: [...selectedFront],
+        back: [...selectedBack],
+        issue: issue,
+        multiplier: 1,
+        append: false,
+        amount: 2,
+        status: 'pending',
+        winAmount: 0,
+        createTime: new Date().toISOString(),
+        description: `前区: ${selectedFront.join(' ')} 后区: ${selectedBack.join(' ')}`
+      };
+      
+      // 显示付款弹窗
+      showPaymentModal();
+    }
+    
+    // 显示付款弹窗
+    function showPaymentModal() {
+      document.getElementById('modal-issue').textContent = currentOrder.issue + '期';
+      document.getElementById('modal-numbers').innerHTML = 
+        '<span style="color: var(--primary-red);">' + currentOrder.front.join(' ') + '</span> + ' +
+        '<span style="color: var(--primary-blue);">' + currentOrder.back.join(' ') + '</span>';
+      
+      currentMultiplier = 1;
+      document.getElementById('append-toggle').checked = false;
+      updateAmount();
+      
+      document.getElementById('payment-modal').style.display = 'flex';
+    }
+    
+    // 关闭付款弹窗
+    function closePaymentModal() {
+      document.getElementById('payment-modal').style.display = 'none';
+    }
+    
+    // 设置倍数
+    function setMultiplier(n) {
+      currentMultiplier = n;
+      document.querySelectorAll('.multiplier-btn').forEach(btn => {
+        const val = parseInt(btn.dataset.value);
+        if (val === n) {
+          btn.style.background = 'var(--primary-red)';
+          btn.style.color = 'white';
+          btn.style.borderColor = 'var(--primary-red)';
+        } else {
+          btn.style.background = 'white';
+          btn.style.color = 'var(--gray-700)';
+          btn.style.borderColor = 'var(--gray-300)';
+        }
+      });
+      updateAmount();
+    }
+    
+    // 更新金额
+    function updateAmount() {
+      const append = document.getElementById('append-toggle').checked;
+      const baseAmount = 2;
+      const appendAmount = append ? 1 : 0;
+      const total = (baseAmount + appendAmount) * currentMultiplier;
+      
+      currentOrder.multiplier = currentMultiplier;
+      currentOrder.append = append;
+      currentOrder.amount = total;
+      
+      document.getElementById('modal-amount').textContent = total;
+      document.getElementById('modal-detail').textContent = 
+        `1注 × ${currentMultiplier}倍` + (append ? ' + 追加' : '') + ` = ${total}元`;
+    }
+    
+    // 确认支付 - 仅保存方案，不支付
+    function confirmPayment() {
+      console.log('确认支付 clicked', currentOrder);
+      if (!currentOrder) {
+        showToast('订单信息错误');
+        return;
+      }
+      
+      // 使用 schemeManager 保存，与我的页面统一
+      const scheme = {
+        type: 'daletou',
+        name: '大乐透',
+        description: `前区: ${selectedFront.join(' ')} 后区: ${selectedBack.join(' ')}`,
+        issue: currentOrder.issue,
+        multiplier: currentMultiplier,
+        amount: currentOrder.amount,
+        front: [...selectedFront],
+        back: [...selectedBack],
+        append: document.getElementById('append-toggle').checked,
+        status: 'unpaid'  // 未支付状态
+      };
+      
+      if (typeof schemeManager !== 'undefined') {
+        schemeManager.add(scheme);
+        console.log('方案已保存到 schemeManager');
+      } else {
+        // 备用保存方式
+        saveOrder(scheme);
+      }
+      
+      closePaymentModal();
+      showToast('方案已保存，请前往我的方案付款');
+      
+      // 重置选择
+      selectedFront = [];
+      selectedBack = [];
+      document.querySelectorAll('.number-btn').forEach(btn => {
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      });
+      updateDisplay();
+      
+      setTimeout(() => {
+        window.location.href = 'profile.html?v=2';
+      }, 1000);
+    }
+    
+    // 获取当前期号
+    function getCurrentIssue() {
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(-2);
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const issue = (day * 3 + Math.floor(now.getHours() / 8)).toString().padStart(3, '0');
+      return year + issue;
+    }
+    
+    // 备用保存订单
+    function saveOrder(order) {
+      try {
+        let orders = JSON.parse(localStorage.getItem('schemes') || '[]');
+        order.id = Date.now().toString();
+        order.createdAt = new Date().toISOString();
+        orders.unshift(order);
+        localStorage.setItem('schemes', JSON.stringify(orders));
+        console.log('订单保存成功:', order);
+      } catch (e) {
+        console.error('保存订单失败:', e);
+        showToast('保存失败，请重试');
+      }
+    }
+
+    // 初始化
+    initNumbers();
+  </script>
+</body>
+</html>

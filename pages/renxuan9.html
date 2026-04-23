@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#e60012">
+  <title>任选九 - 竞彩门店通</title>
+  <link rel="manifest" href="../manifest.json">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <header class="header">
+    <a href="../index.html" class="header-back">‹</a>
+    <div class="header-logo-center">
+      <div class="logo-icon-small">
+        <svg viewBox="0 0 40 40" width="24" height="24">
+          <circle cx="20" cy="20" r="18" fill="#fff"/>
+          <path d="M20 5 L23 15 L33 15 L25 22 L28 32 L20 25 L12 32 L15 22 L7 15 L17 15 Z" fill="#e60012"/>
+        </svg>
+      </div>
+      <span class="header-title">任选九</span>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 玩法说明 -->
+    <div class="card">
+      <div class="card-title">玩法说明</div>
+      <p style="color: var(--gray-600); font-size: 13px; line-height: 1.6;">
+        从<b style="color: var(--primary-red);">14场</b>比赛中任选<b style="color: var(--primary-red);">9场</b>，<br>
+        每场比赛选择<b style="color: var(--primary-blue);">胜/平/负</b>结果
+      </p>
+    </div>
+
+    <!-- 期号信息 -->
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 14px; color: var(--gray-600);">当前期号</span>
+        <span style="font-size: 16px; font-weight: 600; color: var(--primary-red);">25001期</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+        <span style="font-size: 14px; color: var(--gray-600);">截止时间</span>
+        <span style="font-size: 14px; color: var(--gray-500);">01-15 22:00</span>
+      </div>
+    </div>
+
+    <!-- 赛事列表 -->
+    <div class="card">
+      <div class="card-title">赛事列表 <span style="font-size: 12px; color: var(--gray-500); font-weight: normal;">(已选 <span id="selected-count" style="color: var(--primary-red);">0</span>/9场)</span></div>
+      
+      <div id="match-list">
+        <!-- 赛事将通过JS生成 -->
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div style="padding: 0 16px 20px;">
+      <button class="btn btn-secondary" style="width: 100%; margin-bottom: 12px;" onclick="generateRenXuan9()">
+        🎲 机选一注
+      </button>
+      <button class="btn btn-primary" style="width: 100%;" onclick="addToScheme()">
+        添加到方案
+      </button>
+    </div>
+
+    <!-- 当前选择 -->
+    <div class="card">
+      <div class="card-title">当前选择</div>
+      <div id="current-selection" style="text-align: center; padding: 20px;">
+        <p style="color: var(--gray-400);">请选择9场比赛</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="bottom-nav">
+    <a href="../index.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>首页</span>
+    </a>
+    <a href="football.html" class="nav-item">
+      <span class="nav-icon">⚽</span>
+      <span>足球</span>
+    </a>
+    <a href="basketball.html" class="nav-item">
+      <span class="nav-icon">🏀</span>
+      <span>篮球</span>
+    </a>
+    <a href="#" class="nav-item" onclick="showToast('功能开发中'); return false;">
+      <span class="nav-icon">📋</span>
+      <span>方案</span>
+    </a>
+  </nav>
+
+  <div id="toast" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; z-index: 9999;"></div>
+
+  <!-- 付款确认弹窗 -->
+  <div id="payment-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: flex-end;">
+    <div style="background: white; width: 100%; max-height: 80%; border-radius: 16px 16px 0 0; padding: 20px; animation: slideUp 0.3s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="font-size: 18px; font-weight: 600;">确认投注</h3>
+        <button onclick="closePaymentModal()" style="background: none; border: none; font-size: 24px; color: var(--gray-500);">×</button>
+      </div>
+      
+      <!-- 期号信息 -->
+      <div style="background: var(--gray-50); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+          <span style="color: var(--gray-600);">期号：<span id="modal-issue" style="font-weight: 600;">-</span></span>
+          <span style="color: var(--primary-red);">截止：<span id="modal-deadline">01-15 22:00</span></span>
+        </div>
+      </div>
+      
+      <!-- 投注内容 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 8px;">投注内容</div>
+        <div id="modal-selection" style="font-size: 14px; max-height: 100px; overflow-y: auto;"></div>
+      </div>
+      
+      <!-- 倍数选择 -->
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--gray-500); margin-bottom: 10px;">投注倍数</div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="multiplier-btn active" data-value="1" onclick="setMultiplier(1)" style="width: 48px; height: 36px; border: 2px solid var(--primary-red); background: var(--primary-red); color: white; border-radius: 6px; font-weight: 600;">1倍</button>
+          <button class="multiplier-btn" data-value="5" onclick="setMultiplier(5)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">5倍</button>
+          <button class="multiplier-btn" data-value="10" onclick="setMultiplier(10)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">10倍</button>
+          <button class="multiplier-btn" data-value="50" onclick="setMultiplier(50)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">50倍</button>
+          <button class="multiplier-btn" data-value="100" onclick="setMultiplier(100)" style="width: 48px; height: 36px; border: 2px solid var(--gray-300); background: white; color: var(--gray-700); border-radius: 6px; font-weight: 600;">100倍</button>
+        </div>
+      </div>
+      
+      <!-- 金额汇总 -->
+      <div style="background: #fff3e0; padding: 16px; border-radius: 8px; margin: 16px 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 14px; color: var(--gray-600);">应付金额</span>
+          <span style="font-size: 24px; font-weight: 700; color: var(--primary-red);">¥<span id="modal-amount">2</span></span>
+        </div>
+        <div style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">
+          <span id="modal-detail">1注 × 1倍 = 2元</span>
+        </div>
+      </div>
+      
+      <!-- 支付按钮 -->
+      <button onclick="confirmPayment()" style="width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary-red), #ff4757); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600;">
+        确认支付
+      </button>
+    </div>
+  </div>
+
+  <style>
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+  </style>
+
+  <script src="../js/app.js"></script>
+  <script>
+    // 模拟14场比赛数据
+    const matches = [
+      { id: 1, league: '英超', home: '曼联', away: '利物浦', time: '22:00' },
+      { id: 2, league: '西甲', home: '皇马', away: '马竞', time: '23:00' },
+      { id: 3, league: '意甲', home: '尤文', away: '米兰', time: '01:00' },
+      { id: 4, league: '德甲', home: '拜仁', away: '多特', time: '00:30' },
+      { id: 5, league: '法甲', home: '巴黎', away: '里昂', time: '03:00' },
+      { id: 6, league: '英超', home: '曼城', away: '热刺', time: '20:30' },
+      { id: 7, league: '西甲', home: '巴萨', away: '塞维', time: '04:00' },
+      { id: 8, league: '意甲', home: '国米', away: '罗马', time: '02:45' },
+      { id: 9, league: '德甲', home: '莱比锡', away: '勒沃', time: '22:30' },
+      { id: 10, league: '英超', home: '阿森纳', away: '切尔西', time: '21:00' },
+      { id: 11, league: '西甲', home: '社会', away: '黄潜', time: '21:30' },
+      { id: 12, league: '意甲', home: '那不勒斯', away: '拉齐奥', time: '03:45' },
+      { id: 13, league: '德甲', home: '法兰克', away: '沃尔夫', time: '23:30' },
+      { id: 14, league: '法甲', home: '马赛', away: '里尔', time: '02:00' }
+    ];
+
+    let selectedMatches = {};
+
+    // 初始化赛事列表
+    function initMatchList() {
+      const container = document.getElementById('match-list');
+      
+      matches.forEach(match => {
+        const div = document.createElement('div');
+        div.className = 'match-item';
+        div.style.cssText = 'border-bottom: 1px solid var(--gray-100); padding: 12px 0;';
+        div.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 11px; color: var(--gray-500);">${match.id.toString().padStart(2, '0')} ${match.league} ${match.time}</span>
+            <span class="match-status" data-id="${match.id}" style="font-size: 11px; color: var(--gray-400);">未选</span>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <div style="text-align: center; flex: 1;">
+              <div style="font-size: 14px; font-weight: 500;">${match.home}</div>
+            </div>
+            <div style="text-align: center; padding: 0 10px;">
+              <div style="font-size: 11px; color: var(--gray-400);">VS</div>
+            </div>
+            <div style="text-align: center; flex: 1;">
+              <div style="font-size: 14px; font-weight: 500;">${match.away}</div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+            <button class="result-btn" data-match="${match.id}" data-result="3" style="padding: 8px; border: 1px solid var(--gray-300); border-radius: 6px; background: var(--white); font-size: 12px; cursor: pointer;">
+              <div>主胜</div>
+            </button>
+            <button class="result-btn" data-match="${match.id}" data-result="1" style="padding: 8px; border: 1px solid var(--gray-300); border-radius: 6px; background: var(--white); font-size: 12px; cursor: pointer;">
+              <div>平</div>
+            </button>
+            <button class="result-btn" data-match="${match.id}" data-result="0" style="padding: 8px; border: 1px solid var(--gray-300); border-radius: 6px; background: var(--white); font-size: 12px; cursor: pointer;">
+              <div>客胜</div>
+            </button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      // 绑定按钮事件
+      document.querySelectorAll('.result-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const matchId = parseInt(this.dataset.match);
+          const result = this.dataset.result;
+          toggleMatch(matchId, result, this);
+        });
+      });
+    }
+
+    // 切换选择
+    function toggleMatch(matchId, result, btn) {
+      // 清除同场比赛其他选择
+      document.querySelectorAll(`.result-btn[data-match="${matchId}"]`).forEach(b => {
+        b.style.background = 'var(--white)';
+        b.style.color = 'var(--gray-800)';
+        b.style.borderColor = 'var(--gray-300)';
+      });
+
+      const currentCount = Object.keys(selectedMatches).length;
+      
+      if (selectedMatches[matchId] === result) {
+        // 取消选择
+        delete selectedMatches[matchId];
+      } else {
+        // 新选择或更改选择
+        if (!selectedMatches[matchId] && currentCount >= 9) {
+          showToast('最多选9场');
+          return;
+        }
+        selectedMatches[matchId] = result;
+        btn.style.background = 'var(--primary-red)';
+        btn.style.color = 'var(--white)';
+        btn.style.borderColor = 'var(--primary-red)';
+      }
+      
+      updateDisplay();
+    }
+
+    // 更新显示
+    function updateDisplay() {
+      const count = Object.keys(selectedMatches).length;
+      document.getElementById('selected-count').textContent = count;
+      
+      // 更新每场比赛状态
+      matches.forEach(match => {
+        const statusEl = document.querySelector(`.match-status[data-id="${match.id}"]`);
+        if (selectedMatches[match.id]) {
+          const resultMap = { '3': '主胜', '1': '平', '0': '客胜' };
+          statusEl.textContent = resultMap[selectedMatches[match.id]];
+          statusEl.style.color = 'var(--primary-red)';
+        } else {
+          statusEl.textContent = '未选';
+          statusEl.style.color = 'var(--gray-400)';
+        }
+      });
+
+      // 更新当前选择区
+      const display = document.getElementById('current-selection');
+      if (count === 0) {
+        display.innerHTML = '<p style="color: var(--gray-400);">请选择9场比赛</p>';
+        return;
+      }
+
+      let html = `<p style="color: var(--gray-500); font-size: 12px; margin-bottom: 12px;">已选 ${count}/9 场</p>`;
+      html += '<div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">';
+      
+      Object.entries(selectedMatches).forEach(([id, result]) => {
+        const match = matches.find(m => m.id === parseInt(id));
+        const resultMap = { '3': '胜', '1': '平', '0': '负' };
+        html += `<span style="display: inline-flex; align-items: center; background: var(--primary-red); color: white; padding: 4px 10px; border-radius: 4px; font-size: 12px;">${id.padStart(2, '0')}场 ${resultMap[result]}</span>`;
+      });
+      
+      html += '</div>';
+      display.innerHTML = html;
+    }
+
+    // 机选
+    function generateRenXuan9() {
+      // 重置
+      selectedMatches = {};
+      document.querySelectorAll('.result-btn').forEach(btn => {
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      });
+
+      // 随机选9场
+      const indices = [];
+      while (indices.length < 9) {
+        const idx = Math.floor(Math.random() * 14) + 1;
+        if (!indices.includes(idx)) indices.push(idx);
+      }
+
+      // 随机选结果
+      indices.forEach(id => {
+        const results = ['3', '1', '0'];
+        selectedMatches[id] = results[Math.floor(Math.random() * 3)];
+      });
+
+      // 更新按钮状态
+      Object.entries(selectedMatches).forEach(([id, result]) => {
+        const btn = document.querySelector(`.result-btn[data-match="${id}"][data-result="${result}"]`);
+        if (btn) {
+          btn.style.background = 'var(--primary-red)';
+          btn.style.color = 'var(--white)';
+          btn.style.borderColor = 'var(--primary-red)';
+        }
+      });
+
+      updateDisplay();
+    }
+
+    let currentMultiplier = 1;
+    let currentOrder = null;
+
+    // 添加到方案 - 显示付款弹窗
+    function addToScheme() {
+      const count = Object.keys(selectedMatches).length;
+      if (count !== 9) {
+        showToast(`请选满9场(当前${count}场)`);
+        return;
+      }
+
+      const resultMap = { '3': '胜', '1': '平', '0': '负' };
+      const selections = Object.entries(selectedMatches).map(([id, result]) => {
+        return `${id.padStart(2, '0')}场${resultMap[result]}`;
+      });
+
+      // 获取当前期号
+      const issue = getCurrentIssue();
+
+      // 保存当前订单数据
+      currentOrder = {
+        type: 'renxuan9',
+        name: '任选九',
+        selections: {...selectedMatches},
+        description: selections.join(' '),
+        issue: issue,
+        multiplier: 1,
+        amount: 2,
+        status: 'pending',
+        winAmount: 0,
+        createTime: new Date().toISOString()
+      };
+
+      // 显示付款弹窗
+      showPaymentModal();
+    }
+
+    // 显示付款弹窗
+    function showPaymentModal() {
+      document.getElementById('modal-issue').textContent = currentOrder.issue + '期';
+      document.getElementById('modal-selection').innerHTML = currentOrder.description.split(' ').map(s => 
+        `<span style="display: inline-block; background: var(--primary-red); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin: 2px;">${s}</span>`
+      ).join('');
+      
+      currentMultiplier = 1;
+      setMultiplier(1);
+      updateAmount();
+      
+      document.getElementById('payment-modal').style.display = 'flex';
+    }
+
+    // 关闭付款弹窗
+    function closePaymentModal() {
+      document.getElementById('payment-modal').style.display = 'none';
+    }
+
+    // 设置倍数
+    function setMultiplier(n) {
+      currentMultiplier = n;
+      document.querySelectorAll('.multiplier-btn').forEach(btn => {
+        const val = parseInt(btn.dataset.value);
+        if (val === n) {
+          btn.style.background = 'var(--primary-red)';
+          btn.style.color = 'white';
+          btn.style.borderColor = 'var(--primary-red)';
+        } else {
+          btn.style.background = 'white';
+          btn.style.color = 'var(--gray-700)';
+          btn.style.borderColor = 'var(--gray-300)';
+        }
+      });
+      updateAmount();
+    }
+
+    // 更新金额
+    function updateAmount() {
+      const total = 2 * currentMultiplier;
+      
+      currentOrder.multiplier = currentMultiplier;
+      currentOrder.amount = total;
+      
+      document.getElementById('modal-amount').textContent = total;
+      document.getElementById('modal-detail').textContent = `1注 × ${currentMultiplier}倍 = ${total}元`;
+    }
+
+    // 确认支付 - 仅保存方案，不支付
+    function confirmPayment() {
+      console.log('确认支付 clicked', currentOrder);
+      if (!currentOrder) {
+        showToast('订单信息错误');
+        return;
+      }
+      
+      // 使用 schemeManager 保存，与我的页面统一
+      const scheme = {
+        type: 'renxuan9',
+        name: '任选九',
+        description: currentOrder.description,
+        issue: currentOrder.issue,
+        multiplier: currentMultiplier,
+        amount: currentOrder.amount,
+        selections: {...currentOrder.selections},
+        status: 'unpaid'  // 未支付状态
+      };
+      
+      if (typeof schemeManager !== 'undefined') {
+        schemeManager.add(scheme);
+        console.log('方案已保存到 schemeManager');
+      } else {
+        // 备用保存方式
+        saveOrder(scheme);
+      }
+      
+      closePaymentModal();
+      showToast('方案已保存，请前往我的方案付款');
+      
+      // 重置
+      selectedMatches = {};
+      document.querySelectorAll('.result-btn').forEach(btn => {
+        btn.style.background = 'var(--white)';
+        btn.style.color = 'var(--gray-800)';
+        btn.style.borderColor = 'var(--gray-300)';
+      });
+      updateDisplay();
+      
+      setTimeout(() => {
+        window.location.href = 'profile.html?v=2';
+      }, 1000);
+    }
+
+    // 获取当前期号
+    function getCurrentIssue() {
+      const now = new Date();
+      const year = now.getFullYear().toString().slice(-2);
+      const start = new Date(now.getFullYear(), 0, 0);
+      const diff = now - start;
+      const day = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const issue = (day * 3 + Math.floor(now.getHours() / 8)).toString().padStart(3, '0');
+      return year + issue;
+    }
+
+    // 备用保存订单
+    function saveOrder(order) {
+      try {
+        let orders = JSON.parse(localStorage.getItem('schemes') || '[]');
+        order.id = Date.now().toString();
+        order.createdAt = new Date().toISOString();
+        orders.unshift(order);
+        localStorage.setItem('schemes', JSON.stringify(orders));
+        console.log('订单保存成功:', order);
+      } catch (e) {
+        console.error('保存订单失败:', e);
+        showToast('保存失败，请重试');
+      }
+    }
+
+    // 初始化
+    initMatchList();
+  </script>
+</body>
+</html>

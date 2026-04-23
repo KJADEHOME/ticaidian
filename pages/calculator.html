@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#e60012">
+  <title>奖金计算器 - 竞彩门店通</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .calc-tabs { display: flex; background: var(--white); border-bottom: 1px solid var(--gray-200); position: sticky; top: var(--header-height); z-index: 100; }
+    .calc-tab { flex: 1; padding: 14px 8px; text-align: center; font-size: 14px; color: var(--gray-600); border-bottom: 2px solid transparent; cursor: pointer; }
+    .calc-tab.active { color: var(--primary-red); border-bottom-color: var(--primary-red); font-weight: 500; }
+    .calc-content { display: none; padding: 16px; }
+    .calc-content.active { display: block; }
+    .calc-section { background: var(--white); border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+    .calc-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--gray-800); }
+    .input-row { display: flex; align-items: center; margin-bottom: 12px; }
+    .input-label { width: 90px; font-size: 14px; color: var(--gray-700); }
+    .input-field { flex: 1; }
+    .input-field input, .input-field select { width: 100%; padding: 10px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px; }
+    .input-field input:focus, .input-field select:focus { outline: none; border-color: var(--primary-red); }
+    .result-box { background: linear-gradient(135deg, var(--primary-red), #ff4757); border-radius: 12px; padding: 20px; color: white; margin-top: 16px; }
+    .result-main { display: flex; justify-content: space-around; text-align: center; }
+    .result-item { flex: 1; }
+    .result-label { font-size: 12px; opacity: 0.9; margin-bottom: 8px; }
+    .result-value { font-size: 28px; font-weight: 700; }
+    .result-desc { font-size: 12px; opacity: 0.85; margin-top: 8px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+    .btn-calc { width: 100%; padding: 14px; background: var(--primary-red); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 500; margin-top: 16px; cursor: pointer; }
+    .btn-calc:active { background: #c4001a; }
+    .info-text { font-size: 12px; color: var(--gray-500); margin-top: 12px; line-height: 1.6; }
+    .checkbox-group { display: flex; gap: 16px; flex-wrap: wrap; }
+    .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+    .checkbox-item input { width: 18px; height: 18px; }
+    /* 奖金对照表 */
+    .prize-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+    .prize-table th, .prize-table td { padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--gray-100); }
+    .prize-table th { background: var(--gray-50); color: var(--gray-600); font-weight: 500; }
+    .prize-table td { color: var(--gray-800); }
+    .prize-table .highlight { color: var(--primary-red); font-weight: 600; }
+    /* 复式详情 */
+    .fushi-detail { background: var(--gray-50); border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 13px; }
+    .fushi-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--gray-200); }
+    .fushi-row:last-child { border-bottom: none; font-weight: 600; color: var(--primary-red); }
+    /* 快捷选择 */
+    .quick-select { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .quick-btn { padding: 6px 12px; background: var(--gray-100); border: none; border-radius: 16px; font-size: 12px; color: var(--gray-600); cursor: pointer; }
+    .quick-btn:active { background: var(--primary-red); color: white; }
+    /* 竞彩赔率输入 */
+    .odds-inputs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .odds-input { width: 70px; padding: 8px; border: 1px solid var(--gray-300); border-radius: 6px; font-size: 14px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a href="../index.html" class="header-back">←</a>
+    <h1 class="header-title">奖金计算器</h1>
+  </header>
+
+  <div class="calc-tabs">
+    <div class="calc-tab active" onclick="switchTab('daletou')">大乐透</div>
+    <div class="calc-tab" onclick="switchTab('pailie3')">排列三</div>
+    <div class="calc-tab" onclick="switchTab('pailie5')">排列五</div>
+    <div class="calc-tab" onclick="switchTab('jingcai')">竞彩</div>
+  </div>
+
+  <main class="main-content" style="padding-top: calc(var(--header-height) + 48px);">
+    <!-- 大乐透计算器 -->
+    <div id="daletou" class="calc-content active">
+      <div class="calc-section">
+        <div class="calc-title">复式投注计算</div>
+        <div class="input-row">
+          <span class="input-label">前区号码</span>
+          <div class="input-field"><input type="number" id="dlq-front" placeholder="选5-35个" min="5" max="35" value="5"></div>
+        </div>
+        <div class="quick-select">
+          <button class="quick-btn" onclick="setFront(5)">单式5个</button>
+          <button class="quick-btn" onclick="setFront(6)">复式6个</button>
+          <button class="quick-btn" onclick="setFront(7)">复式7个</button>
+          <button class="quick-btn" onclick="setFront(10)">复式10个</button>
+        </div>
+        <div class="input-row" style="margin-top:12px;">
+          <span class="input-label">后区号码</span>
+          <div class="input-field"><input type="number" id="dlq-back" placeholder="选2-12个" min="2" max="12" value="2"></div>
+        </div>
+        <div class="quick-select">
+          <button class="quick-btn" onclick="setBack(2)">单式2个</button>
+          <button class="quick-btn" onclick="setBack(3)">复式3个</button>
+          <button class="quick-btn" onclick="setBack(4)">复式4个</button>
+        </div>
+        <div class="input-row" style="margin-top:12px;">
+          <span class="input-label">倍数</span>
+          <div class="input-field"><input type="number" id="dlq-multi" placeholder="1-99倍" min="1" max="99" value="1"></div>
+        </div>
+        <div class="input-row">
+          <span class="input-label">追加</span>
+          <div class="input-field checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" id="dlq-zhuijia"> 追加投注 (+50%金额，奖金+60%)</label>
+          </div>
+        </div>
+        <button class="btn-calc" onclick="calcDaletou()">计算金额</button>
+        <div class="result-box" id="dlq-result" style="display:none;">
+          <div class="result-main">
+            <div class="result-item">
+              <div class="result-label">注数</div>
+              <div class="result-value" id="dlq-zhu">0</div>
+            </div>
+            <div class="result-item">
+              <div class="result-label">金额</div>
+              <div class="result-value" id="dlq-amount">¥0</div>
+            </div>
+          </div>
+          <div class="result-desc" id="dlq-desc">前区5个 × 后区2个 × 1倍 = 1注 2元</div>
+        </div>
+        <div class="fushi-detail" id="dlq-detail" style="display:none;">
+          <div class="fushi-row"><span>前区组合</span><span id="dlq-front-comb">C(5,5)=1</span></div>
+          <div class="fushi-row"><span>后区组合</span><span id="dlq-back-comb">C(2,2)=1</span></div>
+          <div class="fushi-row"><span>单倍注数</span><span id="dlq-single-zhu">1注</span></div>
+          <div class="fushi-row"><span>总金额</span><span id="dlq-total">¥2元</span></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <div class="calc-title">奖金对照表</div>
+        <table class="prize-table">
+          <tr><th>奖级</th><th>中奖条件</th><th>单注奖金</th><th>追加奖金</th></tr>
+          <tr><td class="highlight">一等奖</td><td>5+2</td><td class="highlight">最高1000万</td><td class="highlight">最高1800万</td></tr>
+          <tr><td>二等奖</td><td>5+1</td><td>浮动</td><td>+60%</td></tr>
+          <tr><td>三等奖</td><td>5+0 / 4+2</td><td>10,000元</td><td>16,000元</td></tr>
+          <tr><td>四等奖</td><td>4+1 / 3+2</td><td>3,000元</td><td>4,800元</td></tr>
+          <tr><td>五等奖</td><td>4+0 / 3+1 / 2+2</td><td>300元</td><td>480元</td></tr>
+          <tr><td>六等奖</td><td>3+0 / 2+1 / 1+2 / 0+2</td><td>5元</td><td>8元</td></tr>
+        </table>
+        <p class="info-text">一等奖单注最高限额1000万元，追加后最高1800万元。奖池过亿时一等奖可能翻倍。</p>
+      </div>
+    </div>
+
+    <!-- 排列三计算器 -->
+    <div id="pailie3" class="calc-content">
+      <div class="calc-section">
+        <div class="calc-title">投注计算</div>
+        <div class="input-row">
+          <span class="input-label">玩法</span>
+          <div class="input-field">
+            <select id="pl3-type" onchange="updatePl3Info()">
+              <option value="zhixuan">直选</option>
+              <option value="zu3">组选三</option>
+              <option value="zu6">组选六</option>
+              <option value="zhixuan-fushi">直选复式</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <span class="input-label">注数</span>
+          <div class="input-field"><input type="number" id="pl3-zhu" placeholder="注数" min="1" value="1"></div>
+        </div>
+        <div class="quick-select">
+          <button class="quick-btn" onclick="setPl3Zhu(1)">1注</button>
+          <button class="quick-btn" onclick="setPl3Zhu(10)">10注</button>
+          <button class="quick-btn" onclick="setPl3Zhu(50)">50注</button>
+          <button class="quick-btn" onclick="setPl3Zhu(100)">100注</button>
+        </div>
+        <div class="input-row" style="margin-top:12px;">
+          <span class="input-label">倍数</span>
+          <div class="input-field"><input type="number" id="pl3-multi" placeholder="倍数" min="1" max="99" value="1"></div>
+        </div>
+        <button class="btn-calc" onclick="calcPailie3()">计算金额</button>
+        <div class="result-box" id="pl3-result" style="display:none;">
+          <div class="result-main">
+            <div class="result-item">
+              <div class="result-label">投注金额</div>
+              <div class="result-value" id="pl3-amount">¥0</div>
+            </div>
+            <div class="result-item">
+              <div class="result-label">理论奖金</div>
+              <div class="result-value" id="pl3-prize">¥0</div>
+            </div>
+          </div>
+          <div class="result-desc" id="pl3-desc"></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <div class="calc-title">奖金对照表</div>
+        <table class="prize-table">
+          <tr><th>玩法</th><th>中奖条件</th><th>单注奖金</th></tr>
+          <tr><td class="highlight">直选</td><td>号码+顺序全中</td><td class="highlight">1,040元</td></tr>
+          <tr><td>组选三</td><td>3个号中，有对子</td><td>346元</td></tr>
+          <tr><td>组选六</td><td>3个号中，无对子</td><td>173元</td></tr>
+          <tr><td>直选复式</td><td>多注覆盖中奖号</td><td>1,040元/注</td></tr>
+        </table>
+        <p class="info-text">直选中奖率1/1000，组选三中奖率1/333，组选六中奖率1/167。</p>
+      </div>
+    </div>
+
+    <!-- 排列五计算器 -->
+    <div id="pailie5" class="calc-content">
+      <div class="calc-section">
+        <div class="calc-title">投注计算</div>
+        <div class="input-row">
+          <span class="input-label">注数</span>
+          <div class="input-field"><input type="number" id="pl5-zhu" placeholder="注数" min="1" value="1"></div>
+        </div>
+        <div class="quick-select">
+          <button class="quick-btn" onclick="setPl5Zhu(1)">1注</button>
+          <button class="quick-btn" onclick="setPl5Zhu(5)">5注</button>
+          <button class="quick-btn" onclick="setPl5Zhu(10)">10注</button>
+        </div>
+        <div class="input-row" style="margin-top:12px;">
+          <span class="input-label">倍数</span>
+          <div class="input-field"><input type="number" id="pl5-multi" placeholder="倍数" min="1" max="99" value="1"></div>
+        </div>
+        <button class="btn-calc" onclick="calcPailie5()">计算金额</button>
+        <div class="result-box" id="pl5-result" style="display:none;">
+          <div class="result-main">
+            <div class="result-item">
+              <div class="result-label">投注金额</div>
+              <div class="result-value" id="pl5-amount">¥0</div>
+            </div>
+            <div class="result-item">
+              <div class="result-label">理论奖金</div>
+              <div class="result-value" id="pl5-prize">¥0</div>
+            </div>
+          </div>
+          <div class="result-desc">排列五奖金100,000元（固定）</div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <div class="calc-title">奖金说明</div>
+        <table class="prize-table">
+          <tr><th>奖级</th><th>中奖条件</th><th>单注奖金</th></tr>
+          <tr><td class="highlight">一等奖</td><td>5位号码+顺序全中</td><td class="highlight">100,000元</td></tr>
+        </table>
+        <p class="info-text">排列五只设一个奖级，固定奖金10万元。中奖率1/100,000。</p>
+      </div>
+    </div>
+
+    <!-- 竞彩计算器 -->
+    <div id="jingcai" class="calc-content">
+      <div class="calc-section">
+        <div class="calc-title">串关奖金计算</div>
+        <div class="input-row">
+          <span class="input-label">串关方式</span>
+          <div class="input-field">
+            <select id="jc-type">
+              <option value="2x1">2串1</option>
+              <option value="3x1">3串1</option>
+              <option value="4x1">4串1</option>
+              <option value="5x1">5串1</option>
+              <option value="6x1">6串1</option>
+              <option value="7x1">7串1</option>
+              <option value="8x1">8串1</option>
+              <option value="3x3">3串3（容错1场）</option>
+              <option value="3x4">3串4（容错1场）</option>
+              <option value="4x4">4串4（容错1场）</option>
+              <option value="4x5">4串5（容错1场）</option>
+              <option value="4x11">4串11（容错2场）</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <span class="input-label">各场赔率</span>
+        </div>
+        <div class="odds-inputs">
+          <input type="number" class="odds-input" id="odds1" placeholder="场次1" step="0.01" min="1" value="2.0">
+          <input type="number" class="odds-input" id="odds2" placeholder="场次2" step="0.01" min="1" value="1.8">
+          <input type="number" class="odds-input" id="odds3" placeholder="场次3" step="0.01" min="1">
+          <input type="number" class="odds-input" id="odds4" placeholder="场次4" step="0.01" min="1">
+        </div>
+        <div class="input-row" style="margin-top:12px;">
+          <span class="input-label">投注金额</span>
+          <div class="input-field"><input type="number" id="jc-amount-input" placeholder="金额" min="2" value="10"></div>
+        </div>
+        <button class="btn-calc" onclick="calcJingcai()">计算奖金</button>
+        <div class="result-box" id="jc-result" style="display:none;">
+          <div class="result-main">
+            <div class="result-item">
+              <div class="result-label">理论奖金</div>
+              <div class="result-value" id="jc-prize">¥0</div>
+            </div>
+            <div class="result-item">
+              <div class="result-label">回报率</div>
+              <div class="result-value" id="jc-return">0%</div>
+            </div>
+          </div>
+          <div class="result-desc" id="jc-desc"></div>
+        </div>
+      </div>
+
+      <div class="calc-section">
+        <div class="calc-title">串关说明</div>
+        <table class="prize-table">
+          <tr><th>串关</th><th>注数</th><th>容错</th><th>最低奖金</th></tr>
+          <tr><td>2串1</td><td>1注</td><td>无</td><td>赔率1×赔率2×2元</td></tr>
+          <tr><td>3串1</td><td>1注</td><td>无</td><td>三赔率相乘×2元</td></tr>
+          <tr><td>3串3</td><td>3注</td><td>错1场</td><td>中2场有奖金</td></tr>
+          <tr><td>3串4</td><td>4注</td><td>错1场</td><td>中2或3场有奖金</td></tr>
+          <tr><td>4串11</td><td>11注</td><td>错2场</td><td>中2场有奖金</td></tr>
+        </table>
+        <p class="info-text">竞彩足球/篮球2串1起投，单注最高奖金限额根据串关数不同。单张彩票最高限额2万元。</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.calc-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.calc-content').forEach(content => content.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function setFront(n) { document.getElementById('dlq-front').value = n; }
+    function setBack(n) { document.getElementById('dlq-back').value = n; }
+    function setPl3Zhu(n) { document.getElementById('pl3-zhu').value = n; }
+    function setPl5Zhu(n) { document.getElementById('pl5-zhu').value = n; }
+
+    function C(n, k) {
+      if (k > n) return 0;
+      let res = 1;
+      for (let i = 0; i < k; i++) res = res * (n - i) / (i + 1);
+      return Math.round(res);
+    }
+
+    function calcDaletou() {
+      const front = parseInt(document.getElementById('dlq-front').value) || 5;
+      const back = parseInt(document.getElementById('dlq-back').value) || 2;
+      const multi = parseInt(document.getElementById('dlq-multi').value) || 1;
+      const zhuijia = document.getElementById('dlq-zhuijia').checked;
+      
+      const frontComb = C(front, 5);
+      const backComb = C(back, 2);
+      const zhu = frontComb * backComb;
+      const singleAmount = zhu * 2;
+      const amount = zhuijia ? singleAmount + zhu * 1 : singleAmount;
+      const total = amount * multi;
+      
+      document.getElementById('dlq-zhu').textContent = zhu * multi;
+      document.getElementById('dlq-amount').textContent = '¥' + total;
+      document.getElementById('dlq-desc').textContent = `前区${front}个 × 后区${back}个 × ${multi}倍 = ${zhu * multi}注 ${zhuijia ? '3' : '2'}元/注`;
+      document.getElementById('dlq-result').style.display = 'block';
+      
+      document.getElementById('dlq-front-comb').textContent = `C(${front},5)=${frontComb}`;
+      document.getElementById('dlq-back-comb').textContent = `C(${back},2)=${backComb}`;
+      document.getElementById('dlq-single-zhu').textContent = zhu + '注';
+      document.getElementById('dlq-total').textContent = '¥' + total + '元';
+      document.getElementById('dlq-detail').style.display = 'block';
+    }
+
+    function updatePl3Info() {
+      const type = document.getElementById('pl3-type').value;
+      if (type === 'zhixuan-fushi') {
+        document.getElementById('pl3-zhu').value = 27;
+      }
+    }
+
+    function calcPailie3() {
+      const type = document.getElementById('pl3-type').value;
+      const zhu = parseInt(document.getElementById('pl3-zhu').value) || 1;
+      const multi = parseInt(document.getElementById('pl3-multi').value) || 1;
+      const amount = zhu * 2 * multi;
+      
+      const prizeMap = { 'zhixuan': 1040, 'zu3': 346, 'zu6': 173, 'zhixuan-fushi': 1040 };
+      const typeName = { 'zhixuan': '直选', 'zu3': '组选三', 'zu6': '组选六', 'zhixuan-fushi': '直选复式' };
+      const prize = prizeMap[type] * zhu * multi;
+      
+      document.getElementById('pl3-amount').textContent = '¥' + amount;
+      document.getElementById('pl3-prize').textContent = '¥' + prize.toLocaleString();
+      document.getElementById('pl3-desc').textContent = `${typeName[type]} ${zhu}注 × ${multi}倍 = ¥${amount}，理论奖金¥${prize.toLocaleString()}`;
+      document.getElementById('pl3-result').style.display = 'block';
+    }
+
+    function calcPailie5() {
+      const zhu = parseInt(document.getElementById('pl5-zhu').value) || 1;
+      const multi = parseInt(document.getElementById('pl5-multi').value) || 1;
+      const amount = zhu * 2 * multi;
+      const prize = 100000 * zhu * multi;
+      
+      document.getElementById('pl5-amount').textContent = '¥' + amount;
+      document.getElementById('pl5-prize').textContent = '¥' + prize.toLocaleString();
+      document.getElementById('pl5-result').style.display = 'block';
+    }
+
+    function calcJingcai() {
+      const type = document.getElementById('jc-type').value;
+      const amount = parseInt(document.getElementById('jc-amount-input').value) || 10;
+      
+      const odds = [];
+      for (let i = 1; i <= 8; i++) {
+        const val = parseFloat(document.getElementById('odds' + i)?.value);
+        if (val > 1) odds.push(val);
+      }
+      
+      let totalOdds = 1, zhu = 1;
+      const guan = parseInt(type.split('x')[0]);
+      const typeNum = parseInt(type.split('x')[1]);
+      
+      for (let i = 0; i < guan && i < odds.length; i++) totalOdds *= odds[i];
+      
+      // 简化计算
+      if (type === '3x3') { zhu = 3; totalOdds = (odds[0]*odds[1] + odds[0]*odds[2] + odds[1]*odds[2]) / 3; }
+      else if (type === '3x4') { zhu = 4; }
+      else if (type === '4x11') { zhu = 11; }
+      
+      const prize = Math.floor(amount * totalOdds * 0.65);
+      const returnRate = Math.floor((prize / amount) * 100);
+      
+      document.getElementById('jc-prize').textContent = '¥' + prize.toLocaleString();
+      document.getElementById('jc-return').textContent = returnRate + '%';
+      document.getElementById('jc-desc').textContent = `${type} 投注¥${amount} 赔率${totalOdds.toFixed(2)}`;
+      document.getElementById('jc-result').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
